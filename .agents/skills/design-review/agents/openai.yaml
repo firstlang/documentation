@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Review"
+  short_description: "Batch-review specification ambiguities"
+  default_prompt: "Use $design-review to create an editable ambiguity review for the units feature."

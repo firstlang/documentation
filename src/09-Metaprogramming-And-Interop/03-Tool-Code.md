@@ -1,0 +1,1 @@
+This is a stub for a feature where Typist itself was supposed to be programmable from within Typist. It's unclear whether that ought to be part of the language or simply just library functions that are callable from compile-side code.x

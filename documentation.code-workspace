@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"extensions": {
+	},
+	"settings": {
+		"search.exclude": {
+			"**/node_modules": true,
+			"context": true
+		},
+		"files.exclude": {
+			"context": true
+		}
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+		]
+	}
+}
