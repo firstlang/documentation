@@ -38,7 +38,7 @@ Extension classes, primitive classes, and selection types have their own member 
 
 Stored fields may use an anchor-only body after their complete declaration. The body owns anchors for the field and does not create a runtime scope or executable startup location.
 
-The `is Type` portion of a field declaration is optional. A bare field is equivalent to `is unknown`. When a field has an initializer and no explicit type, the initializer determines the field type. Field initializers are restricted to literals and single named values; expression evaluation belongs in constructors or other executable bodies.
+The `is Type` portion of a field declaration is optional. A bare field is equivalent to `is unknown`. When a field has an initializer and no explicit type, the initializer determines the field type. Eager field initializers are restricted to literals and single named values; expression evaluation belongs in constructors, lazy field initializers, or other executable bodies.
 
 ```first
 Panel (
