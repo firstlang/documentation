@@ -42,22 +42,16 @@ Inline type annotations stay visually linear. Standalone grouping parentheses ar
 
 ## Generic Aliases
 
-Generic aliases declare type parameters before the type expression.
+Generic aliases declare type parameters in the alias header, after the alias name and before `is alias of`.
 
 ```first
-ResultOf is alias of (
-	T is type
-	Result(T)
-)
+ResultOf (T is type) is alias of Result(T)
 ```
 
 Type parameters use the same forms as generic functions: `T is type` for an unconstrained type and `T is type of Constraint` for a constrained type.
 
 ```first
-AnimalList is alias of (
-	T is type of Animal
-	T[]
-)
+AnimalList (T is type of Animal) is alias of T[]
 ```
 
 Generic application uses parentheses, not angle brackets.
@@ -65,6 +59,8 @@ Generic application uses parentheses, not angle brackets.
 ```first
 users is Result(User)
 ```
+
+Aliases are not functions. The header parameter list may contain only type parameters, such as `T is type` or `T is type of Constraint`. Runtime parameters belong in callable type expressions after `is alias of`.
 
 ## Callable Aliases
 

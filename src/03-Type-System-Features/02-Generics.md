@@ -55,18 +55,12 @@ MyAlias1 is alias of string
 MyAlias2 is alias of string or boolean or int
 ```
 
-More complex examples require surrounding parens. If a type alias uses the surrounding parens, the items within that parens group are divided into 3 sections:
+More complex alias expressions may use the full alias type-expression space after `is alias of`.
 
-1. Invariant declarations (optional)
-2. Generic parameters (optional)
-3. Type expression
+Generic aliases put their type parameters in the alias header, after the alias name and before `is alias of`.
 
 ```
-MyAlias is alias of (
-	// declares
-	// generic parameters
-	// type expression
-)
+MyAlias (T is type) is alias of SomeType(T)
 ```
 
 ### Declaring Generic Type Parameters
@@ -76,8 +70,9 @@ MyAlias is alias of (
 
 ```first
 Foo(T is type, U is type of Node) (
-	
 )
+
+Thing (T is type, U is type of Node) is alias of Pair(T, U)
 ```
 
 - `T is type` → a completely unconstrained generic.
@@ -282,29 +277,23 @@ These can be used **anywhere a type is allowed**.
 ### Simple Alias
 
 ```first
-Password is nameof string
+Password is alias of string
 ```
-
 
 ```first
 TFoo is alias of Object1 and Object2
 
-ObjectA is alias of (
-	T is type
-	{ a is T }
+ObjectA (T is type) is alias of (
+	a is T
 )
 
-ObjectB is alias of (
-	T is type
-	{ b is T }
+ObjectB (T is type) is alias of (
+	b is T
 )
 
-MyAlias3 is alias of (
+MyAlias3 (T1 is type, T2 is type of TFoo) is alias of (
 	declare someInvariant
-	
-	T1 is type
-	T2 is type of TFoo
-	
+
 	ObjectA(T1) and ObjectB(T2)
 )
 ```

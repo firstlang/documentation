@@ -24,6 +24,21 @@ Message is one case of (
 
 User and Admin denote class types. Person accepts their instances or null; declaring it does not construct instances. A space is not a type.
 
+Selection declarations may be generic. Generic parameters are written in the declaration header, after the selection name and before `is`. The header parameter list may contain only type parameters.
+
+```first
+SomeSelection (T is type) is one case of (
+	first(value is T)
+	second(value is T)
+)
+```
+
+Generic selection application uses parentheses, like other generic type application.
+
+```first
+value is SomeSelection(string)
+```
+
 ## Entry Forms
 
 A standalone runtime-style name declares a named entry. It never captures a same-named local. `name = value` supplies an explicit named value. A literal, qualified value reference, or type reference contributes an unnamed alternative. Named and unnamed entries cannot be mixed in a resulting selection; doing so produces a notice. Type and literal alternatives may be mixed.
@@ -68,6 +83,14 @@ MorePermission is Permission or many of (
 
 MoreMessage is Message or one case of (
 	image(url is string)
+)
+```
+
+When a composed selection is generic, the generic header belongs to the resulting declaration. Type arguments used in composed sources are ordinary type applications.
+
+```first
+PagedResult (T is type) is Result(T) or one case of (
+	next(token is string)
 )
 ```
 
