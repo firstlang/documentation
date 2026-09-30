@@ -57,4 +57,4 @@ result = (
 
 Both operations target the captured outer scope. Parentheses used for function calls, conditions, or ordinary expression grouping are not executable scope targets.
 
-The complete target and suffix rules are defined in [[05-Break-and-Continue]] and [[06-Return]].
+The complete target rules are defined in [[05-Break-and-Continue]] and [[06-Return]].

@@ -69,7 +69,7 @@ When the current capture is emitted to the function, the consumer receives a sta
 snapshots(items is Item[]) (
 	collected = items each item (
 		yield item
-		yield.1 collected
+		yield function collected
 	)
 )
 ```
@@ -91,26 +91,26 @@ values = items each item (
 
 # Yield Targets
 
-Eligible yield destinations are counted outward in this order:
+Eligible yield destinations are:
 
-1. Captured enclosing loops, from nearest to outermost.
-2. The current function as the terminal destination.
+- Captured enclosing loops.
+- The current function as the terminal destination.
 
-Uncaptured loops do not count. Conditional bodies, match arms, standalone scopes, calls, conditions, and ordinary grouping parentheses do not count.
+Uncaptured loops are not yield destinations. Conditional bodies, match arms, standalone scopes, calls, conditions, and ordinary grouping parentheses are not yield destinations.
 
-`yield` uses a zero-based outward target suffix:
+An unqualified `yield` targets the nearest eligible destination. A targeted loop yield names a visible captured loop label before the operand. A function-targeting yield uses `yield function`:
 
-- `yield value` is the canonical spelling of `yield.0 value` and targets the nearest eligible destination.
-- `yield.1 value` targets the next eligible destination.
-- `yield.2 value` targets the destination outside that.
+- `yield value` targets the nearest eligible destination.
+- `yield outer value` targets the visible captured loop labeled `outer`.
+- `yield function value` targets the current function.
 
 ```first
 produce() (
-	outerValues = outerItems each outerItem (
-		innerValues = innerItems each innerItem (
+	outerValues = outerItems each outerItem as outer (
+		innerValues = innerItems each innerItem as inner (
 			yield innerItem
-			yield.1 transform(innerItem)
-			yield.2 summarize(innerItem)
+			yield outer transform(innerItem)
+			yield function summarize(innerItem)
 		)
 	)
 )
@@ -120,9 +120,9 @@ The three operations append to `innerValues`, append to `outerValues`, and emit 
 
 The function boundary is an eligible terminal destination rather than a boundary that invalidates lookup. A nested function, callback, or worker begins its own target sequence; `yield` never crosses into its enclosing function.
 
-A suffix is a literal nonnegative decimal integer under the same grammar as `break`, `continue`, and `return`. Typist manages each destination by identity, draws its visual connection, rewrites depths when code moves, removes leading zeros, and canonicalizes `.0` to the unsuffixed spelling.
+Typist manages each destination by identity and draws its visual connection.
 
-An operation whose requested depth extends beyond the current function produces a prominent notice. The entire operation is cooked: its operand is not evaluated, it emits nothing, it does not suspend, and it does not make the function a generator. Execution continues with the following expression. The compiler never clamps an invalid depth to another destination.
+An operation whose named loop target is not visible, not captured, or not a loop produces a prominent notice. The entire operation is cooked: its operand is not evaluated, it emits nothing, it does not suspend, and it does not make the function a generator. Execution continues with the following expression. The compiler never retargets an invalid operation to another destination.
 
 # Ping-Pong Functions
 
@@ -182,7 +182,7 @@ return
 
 `break` and `continue` retain their ordinary targets and never suspend the generator. Breaking a captured loop finalizes its current accumulated array and continues after that loop. Values already exposed to a generator consumer remain valid after any later control transfer.
 
-A `return` captured by a nested match or standalone scope does not complete the generator. Return suffixes count only eligible single-result destinations and the current function under the rules in [[06-Return]].
+A `return` captured by a nested match or standalone scope does not complete the generator. Return target rules are defined in [[06-Return]].
 
 ## ECMAScript Differences
 

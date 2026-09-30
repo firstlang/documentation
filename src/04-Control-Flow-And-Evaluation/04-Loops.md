@@ -25,6 +25,24 @@ getItems() each item index source (
 
 The iterable expression is evaluated exactly once. The compiler obtains one iteration context from that value and advances it until the context reports that iteration is done.
 
+## Loop Labels
+
+A loop may be labeled with `as` after its iteration bindings:
+
+```first
+rows each row as outer (
+	row each cell as inner (
+		if (skipRow(cell)) (
+			continue outer
+		)
+	)
+)
+```
+
+The label names the loop for outward `break`, `continue`, and `yield` operations. It is a real local binding name in the loop body's scope, not a separate label namespace. A loop label therefore cannot duplicate another local binding visible in the same scope.
+
+Label names do not change the meaning of iteration bindings. In `rows each row as outer`, `row` remains the current item and `outer` names the loop target.
+
 ## Iteration Bindings
 
 Every iterable defines an ordered iteration-binding contract. Each identifier following `each` binds one position from that contract.
@@ -484,6 +502,16 @@ It may expose one counter binding:
 ```first
 loop index (
 	console.log(index)
+)
+```
+
+It may also be labeled after the counter binding, or directly after `loop` when no counter is needed:
+
+```first
+loop index as outer (
+	loop as inner (
+		break outer
+	)
 )
 ```
 

@@ -95,13 +95,24 @@ log(message) (
 
 This shorthand is only for unknown-typed parameters. Parameters with defaults or optional markers still use their ordinary initializer syntax.
 
-When the return type is omitted, the compiler infers it from reachable `return` operations that target the function. Returns captured by nested matches or standalone scopes do not contribute to the function's return type.
+When the return type is omitted, the compiler infers it from reachable `return` operations that target the function. Returns captured by nested matches or standalone scopes do not contribute to the function's return type. If any reachable path falls through without returning, `null` is included in the inferred result type and that path returns `null`. An explicit `return null` also contributes `null`.
 
 ```first
 add(a is int, b is int) (
 	return a + b
 )
 ```
+
+```first
+maybeLabel(ready is boolean) (
+	if (ready) (
+		return "ready"
+	)
+)
+// Inferred string or null; returns null when ready is false.
+```
+
+`declare noImplicitNullReturns` reports an implicit `null` path in an unannotated function. It does not change the inferred type or runtime result, and it does not report an explicit `return null`. The declaration is off by default.
 
 `return` may instead target a captured match or captured standalone scope inside the function. Numeric suffixes select outward return destinations. See [[06-Return]].
 

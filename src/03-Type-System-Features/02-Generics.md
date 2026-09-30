@@ -1,6 +1,6 @@
 The generics in First are inspired by TypeScript, but with a reduced feature set in order to work towards the language's goals of maximizing intelligibility, as well as to allow the code to more naturally be translated into Rust.
 
-This document is disorganized—parts of it need to be moved into aliases and attestations. A proper disambiguation pass over this document should take into account all 3 documents rather than reworking this document in isolation.
+This document is disorganized—parts of it are being moved into aliases and attestations. See [[04-Aliases]] for the public alias rules and callable type extraction.
 
 ---
 

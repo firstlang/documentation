@@ -155,7 +155,7 @@ propagate2() 💣 (
 
 # Catching Bombs
 
-You can catch bombs using the `catch` operator. It is worth noting that `catch` in First operates nothing like `catch` in most try/catch supporting languages. Instead it's conceptually much closer to the nullish coalescence operator (`??`).
+You can catch bombs using the `catch` operator. It is worth noting that `catch` in First operates nothing like `catch` in most try/catch supporting languages. Instead it's conceptually much closer to the null coalescing operator (`??`).
 
 The catch operator essentially does "expression fall-through, if and only if the value is a bomb". For example:
 
@@ -170,7 +170,7 @@ getStringMaybe(): string 💣 (
 )
 ```
 
-Below is a more complex example using `catch` with the nullish coalesce operator, to show how the fall through operates:
+Below is a more complex example using `catch` with `??`, to show how the fall through operates:
 
 ```first
 

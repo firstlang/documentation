@@ -95,13 +95,44 @@ result = (
 )
 ```
 
-The resulting type is the union of operands from all reachable returns targeting that capture. It includes `null` when a targeting return is valueless or when execution can reach the destination's end without supplying a value.
+For a captured match or standalone scope, the resulting type is the union of operands from all reachable returns targeting that capture. It includes `null` when a targeting return is valueless or when execution can reach the destination's end without supplying a value.
 
 Captured matches additionally include reachable single-expression arm results. A multi-expression match arm that reaches its end without a targeting return supplies frozen `null`. See [[03-Matches]].
 
-Function result inference includes only returns that target that function. Returns captured by nested matches or standalone scopes do not contribute to the function's result type.
+When an ordinary function has no return type annotation, infer its result type from reachable explicit returns targeting that function. Returns captured by nested matches or standalone scopes do not contribute. If any reachable path reaches the function's end without returning, include `null` in the inferred result type and return frozen `null` on that path.
 
-When an explicitly typed ordinary function can reach its end without returning, fall-through supplies the declared result type's zero value silently. This also applies to omitted, empty, and anchor-only function bodies.
+When an explicitly typed ordinary function reaches its end without returning, it silently supplies the declared result type's zero value. This also applies to omitted, empty, and anchor-only bodies. The distinction lets architectural declarations execute without implementations while keeping operational inference honest about incomplete return paths. Stable functions and function expressions use the same rule.
+
+```first
+maybeOne(ready is boolean) (
+	if (ready) (
+		return 1
+	)
+)
+// Inferred int or null: returns 1 when ready, otherwise null.
+
+nullableOne(ready is boolean) (
+	if (ready) (
+		return 1
+	)
+	return null
+)
+// Inferred int or null: null is explicitly returned.
+```
+
+A valueless `return` remains an explicit return operation and follows the rules above; it is not fall-through.
+
+`declare noImplicitNullReturns` reports a notice at each unannotated function whose reachable fall-through adds `null` to its inferred result. The declaration does not change inference, insert a zero value, or prevent execution. It is off by default. Explicit `return null` does not trigger the notice because the null result is written intentionally.
+
+```first
+declare noImplicitNullReturns
+
+maybeOne(ready is boolean) (
+	if (ready) (
+		return 1
+	)
+) // Notice: fall-through implicitly returns null.
+```
 
 ```first
 label() is string (
@@ -120,7 +151,7 @@ label() is string (
 )
 ```
 
-Fallback follows the actual return destination. A return captured by a nested match or standalone scope still uses that capture's inferred null-producing rules; a suffixed return that targets the function uses the function's declared zero fallback.
+Fallback follows the actual return destination. A return captured by a nested match or standalone scope still uses that capture's inferred null-producing rules; a targeted return that reaches the function uses the function's declared zero fallback.
 
 # Return Targets
 
@@ -147,7 +178,7 @@ Eligible captured matches and standalone scopes are counted from nearest to oute
 
 A nested function, callback, worker, or other function-like body starts its own target sequence. `return` never crosses that boundary into an enclosing function.
 
-A suffix is a literal nonnegative decimal integer under the same grammar as `break`, `continue`, and `yield`. Typist manages the destination by identity, draws its visual connection, removes leading zeros, canonicalizes `.0` to the unsuffixed spelling, and rewrites the depth when connected code moves.
+A suffix is a literal nonnegative decimal integer. Typist manages the destination by identity, draws its visual connection, removes leading zeros, canonicalizes `.0` to the unsuffixed spelling, and rewrites the depth when connected code moves.
 
 An operation whose requested depth has no destination produces a prominent notice. The entire return is cooked: its operand is not evaluated, no control transfer occurs, and execution continues with the following expression. The compiler never clamps an invalid depth to another destination.
 

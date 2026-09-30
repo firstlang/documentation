@@ -33,10 +33,10 @@ There is potential for a parsing ambiguity. In tokens, we simply wrap all the va
 
 ```first
 // Would be ambiguous
-<a onclick=() => 1 > 2 || 3 > 4</a>
+<a onclick=() => 1 > 2 or 3 > 4</a>
 
 // Wrapped in parenthesis, the ambiguity no longer stays
-<a onclick=( () => 1 > 2 || 3 )> 4</a>
+<a onclick=( () => 1 > 2 or 3 )> 4</a>
 ```
 
 Attribute values remain ordinary expressions, while embedded text uses `{expression}` islands, sharing the delimiters used by backtick strings and anchors. Nested expression constructs do not close the enclosing island. In text, `\{` writes a literal opening brace; a closing brace outside an island is literal text. Quoted attribute strings follow [[06-Strings]]: double quotes do not interpolate, and backticks do. The string indentation rules apply to string literals, not automatically to markup text.

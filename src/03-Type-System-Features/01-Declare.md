@@ -44,6 +44,7 @@ F = Function
 | declare noAutomaticNumberConversion          | Reports potentially lossy automatic number conversions. An explicit conversion satisfies the declaration; compilation recovery preserves the ordinary automatic conversion.                                                                                                                               | SCF   |
 | declare noArithmeticOverflow                 | Causes the debugging interpreter to report fixed-width integer and fixed-decimal overflow and oversized shifts. It does not change the wrapped result or compiled output.                                                                                                                                 | SCF   |
 | declare noDivisionByZero                     | Causes the debugging interpreter to report division or remainder by zero for every numeric family. It does not change the result or compiled output.                                                                                                                                                      | SCF   |
+| declare noImplicitNullReturns                | Reports unannotated functions whose reachable fall-through implicitly returns `null`. It does not change inference or runtime behavior.                                                                                                                                                                   | SCF   |
 | declare noType                               | Defines a reference class or primitive class with no type information. Type checks fail on this and it's for memory-sensitive code only.                                                                                                                                                                  | C     |
 | declare noWorkers                            | Specifies that no code within the scope is single-threaded only. Mostly useful for lowering to targets where multi-threading isn't supported (like WASM). This may actually just cause multi-threaded code to behave like single threaded code. Or it might change the display of the code in the editor. | SC    |
 | declare markupFactory                        | Declares the function that markup literals call behind the scenes in the given scope.                                                                                                                                                                                                                     | SC    |
@@ -57,6 +58,22 @@ F = Function
 | declare size [primitive]                     | Fallback for rust's `#[repr(primitive)]`. Used on one-of's                                                                                                                                                                                                                                                | O     |
 | declare enableNanProtection                  | Causes the interpreter to break whenever a nan value is generated                                                                                                                                                                                                                                         | SCF   |
 | declare import P [version V] [features F...] | Establishes inherited wrapper-package features and version policy without creating a module binding.                                                                                                                                                                                                      | S     |
+
+## Implicit Null Returns
+
+`declare noImplicitNullReturns` is an opt-in notice policy. It applies to unannotated ordinary functions and function expressions in its scope.
+
+```first
+declare noImplicitNullReturns
+
+label(ready is boolean) (
+	if (ready) (
+		return "ready"
+	)
+) // Notice: the other path implicitly returns null.
+```
+
+The declaration does not change the inferred `string or null` result or the runtime `null` fallback. It does not report an explicit `return null`, an explicitly typed function's zero fallback, or constructor fall-through. The nearest enclosing declaration applies. Without the declaration, implicit null returns produce no notice.
 
 
 ## Import Policy

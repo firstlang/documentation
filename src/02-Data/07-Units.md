@@ -101,7 +101,6 @@ Bare number adoption applies to the overloadable binary operators:
 - `/`
 - `%`
 - `**`
-- `==`
 
 Compound assignment operators use the same rule as their underlying binary operator.
 
@@ -111,7 +110,7 @@ distance += 2
 
 This is treated through the same unit adoption behavior as `distance + 2`.
 
-The `===` operator is not overloadable and does not use this rule. Bitwise and logical operators are not overloadable.
+Equality operators do not use bare number adoption. Bitwise and logical operators are not overloadable.
 
 ## Assignment
 
@@ -220,13 +219,13 @@ By default, these operations follow the unit's primitive-class numeric behavior.
 
 ## Equality
 
-Loose equality follows primitive-class loose equality and compares the underlying data.
+Loose equality compares the underlying data unless a unit type overloads `==`.
 
 ```first
 10m == 10 // true
 ```
 
-Strict equality requires the primitive class and underlying value to match.
+Strict equality requires the exact unit type and underlying value to match.
 
 ```first
 10m === 10 // false

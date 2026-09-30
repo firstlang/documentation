@@ -2,6 +2,8 @@
 
 `import` is reserved. `features` and `version` are contextual tokens within `import` and `declare import` forms.
 
+`as` is contextual within import aliases and loop labels.
+
 `abstract` is contextual after `constructor is`, after a function signature's `is`, and before an abstract function's return type. `space` and `static` are not language keywords.
 
 ## Reserved Token Candidates (via TypeScript)
