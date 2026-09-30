@@ -19,9 +19,7 @@ An `ensure` that does not reference `return` runs immediately when execution rea
 ```first
 read(filePath is string) (
 	fileText = Fs.readFile(filePath) 💣
-	
 	ensure fileText is not bomb
-	
 	return fileText
 )
 ```

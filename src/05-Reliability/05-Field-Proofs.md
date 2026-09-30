@@ -6,7 +6,7 @@ Field proofs are mutation-aware proofs. They certify that a named issuing functi
 
 A field proof is declared with `field proof`:
 
-```first
+```text
 HighScore is field proof (
 )
 ```
@@ -21,7 +21,7 @@ Ordinary proofs are durable proof-of-passage wristbands. Mutation never invalida
 
 Field proofs express a different guarantee: the evidence remains applicable to the current state of particular fields. Mutating a contributing field invalidates the field proof. Mutating an unrelated field does not.
 
-```first
+```text
 HighScore is field proof (
 )
 
@@ -43,7 +43,7 @@ depends on User#17.score
 
 Therefore:
 
-```first
+```text
 user.name = "Paul"
 // HighScore survives when name is not a contributor.
 
@@ -100,13 +100,13 @@ Field-proof issuing functions require additional restrictions so the compiler ca
 
 A field proof may be attached to a carrier:
 
-```first
+```text
 user with HighScore
 ```
 
 It may relate that carrier to other runtime objects:
 
-```first
+```text
 ValidFor is field proof (
 	array is Array
 )
@@ -122,7 +122,7 @@ A field proof may also be pure when its field dependencies originate entirely fr
 
 The compiler never silently restores an invalidated field proof.
 
-```first
+```text
 user.score = 75
 user = verifyHighScore(user) 💣 throw
 ```

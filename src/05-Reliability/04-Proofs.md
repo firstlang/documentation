@@ -20,7 +20,7 @@ Proofs do not ask the compiler to prove arbitrary predicates. They also do not g
 
 A proof is a nominal declaration:
 
-```first
+```text
 CredentialsAccepted is proof (
 )
 ```
@@ -41,7 +41,7 @@ Name is federated proof (
 
 Two proof declarations are distinct even when they have identical names and parameters in different spaces:
 
-```first
+```text
 Internal (
 	Approved is proof (
 	)
@@ -65,7 +65,7 @@ Every public proof must include documentation or an anchor stating the historica
 
 An ordinary proof records that issuance happened successfully.
 
-```first
+```text
 EmailVerified is proof (
 )
 ```
@@ -74,7 +74,7 @@ If a value carries `EmailVerified`, the compiler guarantees that an authorized i
 
 Mutation never removes an ordinary proof:
 
-```first
+```text
 user = verifyEmail(user)
 // user carries EmailVerified
 
@@ -94,7 +94,7 @@ Mutation-aware evidence is a separate future feature called a field proof. Field
 
 A non-federated proof has one issuing site.
 
-```first
+```text
 HtmlSafe is proof (
 )
 
@@ -117,7 +117,7 @@ Propagation is not issuance. Passing, returning, storing, aliasing, moving, or c
 
 A federated proof permits multiple independent issuing sites:
 
-```first
+```text
 Imported is federated proof (
 )
 ```
@@ -154,19 +154,19 @@ A same-named method selected on another static type is a different function. If 
 
 In expression position, `with` issues and attaches one proof:
 
-```first
+```text
 safe = escaped with HtmlSafe
 ```
 
 Relationship arguments follow the proof name:
 
-```first
+```text
 authorized = request with AuthorizedFor(user)
 ```
 
 In type position, the same syntax requires evidence:
 
-```first
+```text
 render(html is string with HtmlSafe) (
 	console.log(html)
 )
@@ -176,7 +176,7 @@ Each establishment expression issues exactly one nominal proof. Several new proo
 
 A value may carry several proofs by composing evidence from separate issuing sites:
 
-```first
+```text
 verify(value is Document) is Document with Reviewed Approved 💣 (
 	reviewed = review(value) 💣 throw
 	return approve(reviewed) 💣 throw
@@ -191,7 +191,7 @@ The outer function propagates both proofs. It does not create issuing sites for 
 
 A named instance method may issue a proof on its receiver and return the same object as `this with Proof`:
 
-```first
+```text
 User (
 	constructor
 	
@@ -217,7 +217,7 @@ A proof application is pure when it has no runtime carrier. Purity belongs to th
 
 A zero-parameter pure proof is issued using its bare name:
 
-```first
+```text
 Ticket is proof (
 )
 
@@ -232,14 +232,14 @@ enter(ticket is Ticket) (
 
 Usage:
 
-```first
+```text
 ticket = getTicket()
 enter(ticket)
 ```
 
 After erasure, the runtime call is equivalent to:
 
-```first
+```text
 enter()
 ```
 
@@ -253,7 +253,7 @@ All valid instances of the same zero-parameter nominal pure proof satisfy the sa
 
 Proof parameters relate evidence to particular runtime objects:
 
-```first
+```text
 AuthorizedFor is proof (
 	user is User
 	resource is Resource
@@ -262,13 +262,13 @@ AuthorizedFor is proof (
 
 Attached use:
 
-```first
+```text
 request with AuthorizedFor(user, resource)
 ```
 
 Pure use:
 
-```first
+```text
 authorization = AuthorizedFor(user, resource)
 ```
 
@@ -295,7 +295,7 @@ A relationship argument must be a side-effect-free access path to an existing el
 
 Aliases of the same runtime object satisfy the same relationship. Rebinding a source name does not retarget existing evidence:
 
-```first
+```text
 owner = alice
 document = establishOwner(document, owner)
 
@@ -306,7 +306,7 @@ owner = bob
 
 A proof parameter may itself require evidence:
 
-```first
+```text
 AuthorizedFor is proof (
 	user is User with Authenticated
 	resource is Resource
@@ -325,7 +325,7 @@ A function or method returning evidence must declare its complete proof-bearing 
 
 Every successful return must carry exactly the declared proof set with identical relationship arguments:
 
-```first
+```text
 authorize
 	(request is Request, user is User) 
 	is Request with AuthorizedFor(user) 💣 (
@@ -348,7 +348,7 @@ A proof-bearing return annotation is a requirement on the implementation. It doe
 
 A value may satisfy a parameter requiring any subset of its proofs:
 
-```first
+```text
 inspect(value is Document with Reviewed) (
 )
 
@@ -370,7 +370,7 @@ There is no explicit proof-removal operation. A narrower typed view can hide evi
 
 Proof availability is path-sensitive at the usage site:
 
-```first
+```text
 if condition (
 	value = establishApproved(value)
 	consumeApproved(value)
@@ -392,7 +392,7 @@ Generics require no special proof semantics. Ordinary monomorphized types are ch
 
 Mutation has no effect on ordinary proofs:
 
-```first
+```text
 user = authenticate(user)
 user.name = "Paul"
 
@@ -419,7 +419,7 @@ This durability is a semantic limitation as well as a convenience. The proof mea
 
 An erased proof cannot observe revocation, time, databases, networks, or policy changes.
 
-```first
+```text
 authorize(user is User) is User with AuthorizationChecked 💣 (
 	if database.isAuthorized(user.id) (
 		return user with AuthorizationChecked
@@ -466,7 +466,7 @@ The one exception is the compiler-known clone operation.
 
 The compiler-known clone operation creates a new runtime identity and copies the complete proof set unchanged:
 
-```first
+```text
 copy = Object.clone(original)
 ```
 
@@ -530,7 +530,7 @@ The compiler removes proof-only values and parameters after semantic analysis.
 
 An issuing function may bomb when validation fails:
 
-```first
+```text
 verify(value is Document) is Document with Reviewed 💣 (
 	if reviewPasses(value) (
 		return value with Reviewed
@@ -597,7 +597,7 @@ Typist should:
 
 Proofs extend ordinary types without changing runtime representation:
 
-```first
+```text
 string
 string with HtmlSafe
 Document with Reviewed Approved
