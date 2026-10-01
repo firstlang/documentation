@@ -1,6 +1,6 @@
 Primitive classes define nominal value types.
 
-They are used for branded primitives, units, and small value-shaped aggregates. Primitive classes live in a separate type universe from reference classes. A primitive class cannot inherit from a reference class, and a reference class cannot inherit from a primitive class.
+They are used for branded primitives and small value-shaped aggregates. Primitive classes live in a separate type universe from reference classes. A primitive class cannot inherit from a reference class, and a reference class cannot inherit from a primitive class.
 
 ```first
 UserId is u64
@@ -254,12 +254,10 @@ For numeric primitive classes with different concrete numeric representations, l
 
 ## Units
 
-A numeric-backed primitive class marked with `declare unit` can be used as a unit suffix.
+Units are compile-time numeric tags, not primitive classes.
 
 ```first
-cm is AnyNumeric (
-	declare unit
-)
+cm is unit
 
 width = 10cm
 ```

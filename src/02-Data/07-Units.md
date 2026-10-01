@@ -1,69 +1,135 @@
-Units are numeric-backed primitive classes with suffix construction syntax.
+Units are compile-time numeric tags with suffix syntax.
 
-They are a language primitive for building unit libraries. First does not include dimensional analysis, automatic conversion tables, unit cancellation, or compound unit generation as built-in language behavior. Those features can be defined by libraries using primitive classes and operator overloads.
+They are a language primitive for building unit libraries. A unit affects type checking, overload selection, completions, and lowering, but it does not allocate a wrapper or preserve a distinct runtime object. Lowered output stores and passes the underlying numeric representation required by context.
+
+First does not include dimensional analysis, automatic conversion tables, unit cancellation, or compound unit generation as built-in language behavior. Libraries define those behaviors with functions and operator overloads.
 
 ## Declaration
 
-A unit is a primitive class marked with `declare unit`.
+A unit is declared with `is unit`.
 
 ```first
-m is AnyNumeric (
-	declare unit
-)
+m is unit
+cm is unit
 
 distance = 10m
 ```
 
-Units must be based on a concrete numeric primitive, a numeric primitive group, or another numeric-backed primitive class. Units cannot be based directly on `primitive`, because aggregate primitive classes do not have a single numeric value to pass as the implicit construction value.
+A unit does not declare a numeric base. The tagged expression keeps or resolves to the concrete numeric representation selected by ordinary numeric inference and surrounding context.
 
-`declare unit` is not inherited automatically. A derived primitive class is usable as a unit suffix only if it also declares `unit`.
+Units cannot inherit from other units, and other declarations cannot inherit from units.
 
-Unit classes are not sealed by default.
+```first
+m is unit
+surveyM is unit
+
+// Invalid:
+// surveyM is m
+```
+
+Unit declarations may use ordinary identifier casing, including conventional uppercase symbols.
+
+```first
+K is unit
+Hz is unit
+```
+
+## Unit Bodies
+
+A unit may have a body for functions and operator overloads. Fields, constructors, setters, and ghosts are not allowed. A unit without members may omit the body.
+
+```first
+m is unit
+
+cm is unit (
+	operator + (this, that is cm) is cm (
+		return cm(this + that)
+	)
+)
+```
+
+Functions associated with a unit are resolved as compile-time member syntax on tagged values and lower to ordinary function calls with the unit value as the first argument.
+
+```first
+cm is unit (
+	toM(this) is m (
+		return m(this / 100)
+	)
+)
+
+distance = 200cm
+meters = distance.toM()
+```
 
 ## Suffix Syntax
 
-Unit suffix syntax has no space between the numeric literal and the unit name.
+Unit suffix syntax applies only to numeric literals and has no space between the literal and the unit name.
 
 ```first
 width = 10m
 offset = -3m
+temperature = 300K
 ```
 
-Suffix syntax is constructor sugar for numeric literals only.
+Built-in numeric suffixes are recognized first. Any remaining suffix must resolve to an in-scope unit.
 
 ```first
-width = 10m
-width = m(10)
+precise = m(1.25ff)
 ```
 
-These two forms are equivalent.
-
-Suffixes use in-scope unqualified unit names. They follow the same identifier rules as type names and may be uppercase.
-
-Suffix syntax is not used for variables or expressions. Use normal construction instead.
+Suffix syntax is not used for variables or expressions. Use unit application instead.
 
 ```first
 size = getSize()
 width = m(size)
 ```
 
-## Constructors
+## Unit Application
 
-A unit class uses the same implicit first construction parameter as other primitive classes based on concrete primitives or primitive groups.
-
-The unit suffix form can only target unit classes whose construction is satisfied by that implicit value. Unit constructors may still validate or normalize the value.
+`Unit(expression)` applies a compile-time unit tag to a numeric expression. It is unit application, not an ordinary class constructor call.
 
 ```first
-positiveM is AnyNumeric (
-	declare unit
-	
-	constructor() (
-		if (this < 0) (
-			// compiler notice or library-defined validation behavior
-		)
+width = m(getWidth())
+```
+
+Unit application lowers to the expression's underlying numeric value after checks and overload selection. It does not run constructor code.
+
+Validation, normalization, and conversion belong in ordinary functions or explicit operator overloads.
+
+```first
+requirePositiveMeters(value is m) is m (
+	if (value < m(0)) (
+		// library-defined notice or bomb behavior
 	)
+	return value
 )
 ```
+
+## Annotations
+
+A unit may appear alone as a type annotation for a unit-tagged provisional numeric value.
+
+```first
+width is m = 10
+```
+
+This is equivalent for unit checking to:
+
+```first
+width is m = m(10)
+```
+
+API boundaries should pin the runtime numeric representation with `with`.
+
+```first
+measure(width is i64 with cm) (
+)
+
+value is i64 with cm = 10cm
+provisional is cm = 10
+```
+
+`value is Unit` leaves the numeric representation provisional. `value is NumericType with Unit` fixes the runtime numeric representation and attaches the erased unit tag.
 
 ## Bare Number Adoption
 
@@ -73,7 +139,7 @@ When a bare number appears in a binary operation with a unit, the compiler adopt
 total = 10m + 2
 ```
 
-This is equivalent to:
+This is equivalent for unit checking to:
 
 ```first
 total = m(10) + m(2)
@@ -85,18 +151,13 @@ The same rule applies when the bare number is on the left.
 total = 2 + 10m
 ```
 
-This is equivalent to:
-
-```first
-total = m(2) + m(10)
-```
-
-Bare number adoption applies to the overloadable binary operators:
+Bare number adoption applies to the overloadable binary arithmetic operators:
 
 - `+`
 - `-`
 - `*`
 - `/`
+- `\`
 - `%`
 - `**`
 
@@ -106,85 +167,30 @@ Compound assignment operators use the same rule as their underlying binary opera
 distance += 2
 ```
 
-This is treated through the same unit adoption behavior as `distance + 2`.
-
 Equality operators do not use bare number adoption. Bitwise and logical operators are not overloadable.
 
-## Assignment
+## Unit Relationships
 
-When a bare number is assigned to a location with a known unit type, the compiler adopts the number into that unit type.
+Distinct units are unrelated unless a function, conversion, or operator overload explicitly relates them.
 
 ```first
-width is m = 10
+m is unit
+surveyM is unit
+
+distance = 10m + 5surveyM // compiler notice unless an overload defines this operation
 ```
 
-This is equivalent to:
+Libraries may define conversions or cross-unit operations with unit functions and operator overloads.
 
 ```first
-width is m = m(10)
-```
-
-The annotation supplies the unit target.
-
-## Related Units
-
-When a binary operation combines units in the same primitive-class inheritance chain, both operands are adopted into the most-derived unit type involved in the operation.
-
-```first
-m is AnyNumeric (
-	declare unit
+inch is unit (
+	toCm(this) is cm (
+		return cm(this * 2.54)
+	)
 )
 
-msv is m (
-	declare unit
-)
-
-distance = 10m + 5msv
-```
-
-`msv` represents `SurveyMeter`, a domain-specific meter unit used for survey-grade measurements.
-
-The operation is equivalent to:
-
-```first
-distance = msv(10) + msv(5)
-```
-
-The result type is `msv`.
-
-A value of a more-derived unit may still be assigned to an ancestor unit type through the normal primitive-class ancestor relationship.
-
-```first
-distance is m = 10m + 5msv
-```
-
-## Unrelated Units
-
-Binary operations do not work across unrelated unit types unless an operator overload defines the operation.
-
-```first
-m is AnyNumeric (
-	declare unit
-)
-
-kg is AnyNumeric (
-	declare unit
-)
-
-value = 10m + 5kg // ❌ compiler notice
-```
-
-Libraries may define conversions or cross-unit operations with normal primitive-class operator overloads.
-
-```first
-inch is AnyNumeric (
-	declare unit
-)
-
-cm is AnyNumeric (
-	declare unit
-	
-	operator + (this, that is inch) (
+cm is unit (
+	operator + (this, that is inch) is cm (
 		return cm(this + that.toCm())
 	)
 )
@@ -199,32 +205,44 @@ area = 10m * 10m
 ratio = 10m / 2m
 ```
 
-By default, these operations follow the unit's primitive-class numeric behavior. If a library wants `m * m` to return an area unit, or `m / m` to return a bare number, it defines those operator overloads.
+The compiler never synthesizes compound units, cancels units, or infers that `m / s` is `mps`.
+
+Same-unit `+` and `-` are valid by default and return the same unit. Same-unit `*`, `/`, `\`, `%`, and `**` require explicit operator overloads unless the operation involves bare-number adoption from the other operand.
 
 ```first
-m2 is AnyNumeric (
-	declare unit
-)
+sum = 10m + 5m
+area = 10m * 5m // compiler notice unless an overload defines the result
+```
 
-m is AnyNumeric (
-	declare unit
-	
-	operator * (this, that is m) (
+If a library wants `m * m` to return an area unit, or `m / s` to return a speed unit, it defines those operator overloads.
+
+```first
+m2 is unit
+s is unit
+mps is unit
+
+m is unit (
+	operator * (this, that is m) is m2 (
 		return m2(this * that)
+	)
+
+	operator / (this, that is s) is mps (
+		return mps(this / that)
 	)
 )
 ```
 
 ## Equality
 
-Loose equality compares the underlying data unless a unit type overloads `== !=`.
+Loose equality between a unit value and a bare numeric value compares the underlying numeric values unless a unit overloads `== !=`.
 
 ```first
 10m == 10 // true
 ```
 
-Strict equality requires the exact unit type and underlying value to match.
+Strict equality is checked statically before lowering and requires the same unit tag and compatible underlying numeric value.
 
 ```first
 10m === 10 // false
+10m === 10m // true
 ```

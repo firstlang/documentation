@@ -91,7 +91,7 @@ right is i64[] = [3, 4]
 total = left + right // i64[]
 ```
 
-Unit adoption, related-unit adoption, primitive-class operator overloads, and numeric promotion work the same way they do for scalar operators.
+Unit adoption, unit operator overloads, primitive-class operator overloads, and numeric promotion work the same way they do for scalar operators.
 
 ```first
 distances = [1m, 2m, 3m]

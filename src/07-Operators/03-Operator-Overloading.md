@@ -1,16 +1,14 @@
 # Operator Overloading
 
-Only scalar-backed primitive classes can overload operators.
+Only scalar-backed primitive classes and unit declarations can overload operators.
 
-Operator overloads are defined inside the primitive class body. Extension classes cannot define operator overloads.
+Operator overloads are defined inside the primitive class or unit body. Extension classes cannot define operator overloads.
 
 An operator overload starts with `operator`, followed by the operator token or fixed comparison pair, followed by the operand list.
 
 ```first
-📏 cm is AnyNumeric (
-	declare unit
-	
-	operator + (this, that is cm) (
+📏 cm is unit (
+	operator + (this, that is cm) is cm (
 		return cm(this + that)
 	)
 )
@@ -18,7 +16,7 @@ An operator overload starts with `operator`, followed by the operator token or f
 
 ## Eligible Types
 
-Operator overloads are allowed only on primitive classes whose root is a concrete primitive, a primitive group, or another scalar-backed primitive class.
+Operator overloads are allowed on unit declarations and on primitive classes whose root is a concrete primitive, a primitive group, or another scalar-backed primitive class.
 
 Fresh aggregate primitive classes rooted directly in `primitive` cannot overload operators.
 
@@ -29,14 +27,12 @@ Every operator overload declares exactly two operands. One operand is the bare t
 The operand order is exact. The compiler does not assume that an operator is commutative.
 
 ```first
-📏 cm is AnyNumeric (
-	declare unit
-	
-	operator - (this, that is i32) (
+📏 cm is unit (
+	operator - (this, that is i32) is cm (
 		return cm(this - that)
 	)
 	
-	operator - (that is i32, this) (
+	operator - (that is i32, this) is cm (
 		return cm(that - this)
 	)
 )
@@ -84,4 +80,4 @@ Compound assignment uses the selected binary operator, then assigns the result b
 
 Duplicate operator overloads with the same operator form and operand type order produce a compiler notice.
 
-When no overload applies, ordinary unit adoption, numeric conversion, and built-in operator rules may still apply.
+When no overload applies, ordinary unit adoption, same-unit defaults, numeric conversion, and built-in operator rules may still apply.
