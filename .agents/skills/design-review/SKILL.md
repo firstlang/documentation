@@ -42,6 +42,23 @@ For every item, provide:
 
 Do not invent ambiguities merely to enlarge the review. Do not call a short sample exhaustive. If an unresolved choice exists, do not omit it because its likely resolution seems obvious.
 
+## Validate The Ledger
+
+Before writing the review file, perform a separate evidence pass over every proposed ambiguity. This pass is adversarial: its job is to remove unsupported or hallucinated items, not to preserve the draft.
+
+For each item, verify that the feature, syntax, behavior, or interaction at the center of the ambiguity actually exists in the repository:
+
+- Search the documentation for the exact syntax, term, operator, type, feature name, and nearby concepts used by the item.
+- Check related reference tables, examples, tests, fixtures, implementation, and notes when documentation evidence is incomplete.
+- Keep the item only when repository evidence shows the underlying feature or interaction is real and the remaining choice is genuinely unresolved.
+- Drop the item when the repository explicitly forbids the feature, says it is not supported, or gives a determinate rule.
+- Drop the item when no repository evidence can be found that the alleged feature, syntax, or interaction exists.
+- Rewrite the item when the evidence supports a narrower real ambiguity than the draft described.
+
+The evidence pass may add a newly noticed ambiguity only when it is discovered while checking repository evidence, not from free association. Any new item must pass the same evidence test before inclusion.
+
+If using helper agents, use one agent to draft the ambiguity ledger and a second agent to validate the ledger against repository evidence. The main agent remains responsible for the final file and must not include an item solely because a helper proposed it.
+
 ## Write The Markdown File
 
 Write the complete review to a Markdown file in the repository's documentation root unless the user names another location. Use `<Feature>-Design-Review.md` as the default filename. Save the file in ./+Ambiguity-Ledgers. Do not print the complete review into the conversation; return a concise summary and a link to the file.
