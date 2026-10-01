@@ -2,10 +2,8 @@ Primitive classes define nominal value types.
 
 They are used for branded primitives, units, and small value-shaped aggregates. Primitive classes live in a separate type universe from reference classes. A primitive class cannot inherit from a reference class, and a reference class cannot inherit from a primitive class.
 
-The editor renders the 🪨 unicode character before a primitive class definition when one is detected.
-
 ```first
-🪨 UserId is u64
+UserId is u64
 ```
 
 Primitive classes are immutable values. They do not have object identity, are not reference counted, and do not support ghosts.
@@ -27,7 +25,7 @@ The provisional `numeric` annotation is not a primitive class base. To define a 
 Inheriting from a concrete primitive creates a branded primitive with the same underlying representation.
 
 ```first
-🪨 UserId is u64 (
+UserId is u64 (
 )
 
 id = UserId(123)
@@ -38,7 +36,7 @@ id = UserId(123)
 Primitive classes based on a concrete primitive receive an implicit first construction parameter. The parameter is compatible with the base primitive. The editor may show this parameter in the function signature, but it does not appear in the underlying text file.
 
 ```first
-🪨 BracketedString is string (
+BracketedString is string (
 )
 
 value = BracketedString("hello")
@@ -47,7 +45,7 @@ value = BracketedString("hello")
 Primitive class chains rooted in a concrete primitive cannot declare stored fields. Once the chain has chosen a concrete primitive representation, its shape is fixed.
 
 ```first
-🪨 UserId is u64 (
+UserId is u64 (
 	label is string // ❌ compiler notice
 )
 ```
@@ -57,7 +55,7 @@ Primitive class chains rooted in a concrete primitive cannot declare stored fiel
 Inheriting from a primitive group creates a parametric primitive class over the concrete primitives in that group.
 
 ```first
-🪨 DatabaseId is AnyUnsignedInteger (
+DatabaseId is AnyUnsignedInteger (
 )
 
 id = DatabaseId(123)
@@ -74,7 +72,7 @@ Primitive class chains rooted in primitive groups cannot declare stored fields.
 Inheriting directly from `primitive` creates a fresh primitive shape.
 
 ```first
-🪨 Point is primitive (
+Point is primitive (
 	x is f32
 	y is f32
 )
@@ -85,7 +83,7 @@ Fields are allowed only for primitive class chains rooted at `primitive`.
 Aggregate primitive classes may contain primitive fields and reference fields.
 
 ```first
-🪨 LabeledPoint is primitive (
+LabeledPoint is primitive (
 	x is f32
 	y is f32
 	label is string
@@ -102,12 +100,12 @@ Primitive classes based directly on `primitive` do not receive an implicit first
 A primitive class may inherit from one other primitive class.
 
 ```first
-🪨 Vector2 is primitive (
+Vector2 is primitive (
 	x is f32
 	y is f32
 )
 
-🪨 Vector3 is Vector2 (
+Vector3 is Vector2 (
 	z is f32
 )
 ```
@@ -117,7 +115,7 @@ The root of the primitive class chain determines its representation family.
 If the chain is rooted at `primitive`, descendants may add stored fields.
 
 ```first
-🪨 Vector4 is Vector3 (
+Vector4 is Vector3 (
 	w is f32
 )
 ```
@@ -125,10 +123,10 @@ If the chain is rooted at `primitive`, descendants may add stored fields.
 If the chain is rooted at a concrete primitive or primitive group, descendants keep the same scalar representation family and cannot add stored fields.
 
 ```first
-🪨 UserId is u64 (
+UserId is u64 (
 )
 
-🪨 AdminUserId is UserId (
+AdminUserId is UserId (
 )
 ```
 
@@ -158,7 +156,7 @@ For concrete primitive and primitive group bases, construction begins with the i
 A constructor may call `super(value)` to replace the underlying base value for the value being constructed.
 
 ```first
-🪨 BracketedString is string (
+BracketedString is string (
 	constructor() (
 		super("[" + this + "]")
 	)
@@ -173,7 +171,7 @@ The value passed to `super(...)` must be compatible with the base primitive or p
 For primitive classes based directly on `primitive`, there is no base value to replace, so `super(...)` is not available.
 
 ```first
-🪨 Point is primitive (
+Point is primitive (
 	x is f32
 	y is f32
 	
@@ -190,10 +188,10 @@ An empty primitive-class body may be omitted. When a body is present, it keeps t
 
 ## Members
 
-Primitive classes may define functions, getters, and operator overloads. They may also use nested spaces to group otherwise permitted members. A group does not relax the primitive class's representation rules: scalar-backed primitive chains cannot add fields at any depth, while fresh primitive shapes treat grouped fields as part of the same primitive storage. Directly accessible program-owned members belong in a same-name space.
+Primitive classes may define functions and getters. Scalar-backed primitive classes may also define operator overloads. They may also use nested spaces to group otherwise permitted members. A group does not relax the primitive class's representation rules: scalar-backed primitive chains cannot add fields at any depth, while fresh primitive shapes treat grouped fields as part of the same primitive storage. Directly accessible program-owned members belong in a same-name space.
 
 ```first
-🪨 Counter is u64 (
+Counter is u64 (
 	next() is Counter (
 		return Counter(this + 1)
 	)
@@ -213,7 +211,7 @@ There is no virtual dispatch. Member lookup is selected by the static type of th
 When a shadowing member needs to call the base behavior, it can use `super`.
 
 ```first
-🪨 MyString is string (
+MyString is string (
 	toString() is string (
 		return "MyString(" + super.toString() + ")"
 	)
@@ -223,7 +221,7 @@ When a shadowing member needs to call the base behavior, it can use `super`.
 For ordinary operations, use `this`.
 
 ```first
-🪨 Score is int (
+Score is int (
 	add(amount is int) is Score (
 		return Score(this + amount)
 	)
@@ -239,10 +237,10 @@ Strict equality requires the primitive class and the underlying value to match.
 Loose equality compares the underlying data. Branded primitive types may be different.
 
 ```first
-🪨 UserId is u64 (
+UserId is u64 (
 )
 
-🪨 OrderId is u64 (
+OrderId is u64 (
 )
 
 user = UserId(10)
@@ -259,7 +257,7 @@ For numeric primitive classes with different concrete numeric representations, l
 A numeric-backed primitive class marked with `declare unit` can be used as a unit suffix.
 
 ```first
-📏 cm is AnyNumeric (
+cm is AnyNumeric (
 	declare unit
 )
 
@@ -270,29 +268,27 @@ Unit syntax and unit operator behavior are described in [[04-Units]].
 
 ## Operator Overloads
 
-Operator overloads are supported only for primitive classes.
+Operator overloads are supported only for scalar-backed primitive classes.
 
-They may be defined inside a primitive class.
+They may be defined inside a scalar-backed primitive class.
 
 ```first
-🪨 Point is primitive (
-	x is f32
-	y is f32
+Score is i32 (
 	
-	+ (other is Point) is Point (
-		return Point(this.x + other.x, this.y + other.y)
+	operator + (this, that is Score) (
+		return Score(this + that)
 	)
 )
 ```
 
-They may also be defined inside an extension class, but only when the extension class targets a primitive class.
+Operator overloads use the `operator` keyword. The canonical operands are `this` and `that`. `this` is untyped and means the containing primitive class; `that` is typed with ordinary `is` syntax.
 
 ```first
-🔌 PointOperators is extension of Point (
-	- (other is Point) is Point (
-		return Point(this.x - other.x, this.y - other.y)
+UserId is u64 (
+	operator == != (this, that is UserId) (
+		return this == that
 	)
 )
 ```
 
-(Note that primitive classes are required in order to overload operators as the feature is not supported for reference classes)
+Extension classes cannot define operator overloads.

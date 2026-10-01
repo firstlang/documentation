@@ -6,10 +6,8 @@ They are a language primitive for building unit libraries. First does not includ
 
 A unit is a primitive class marked with `declare unit`.
 
-The editor renders the 📏 unicode character before a unit primitive class definition when one is detected.
-
 ```first
-📏 m is AnyNumeric (
+m is AnyNumeric (
 	declare unit
 )
 
@@ -56,7 +54,7 @@ A unit class uses the same implicit first construction parameter as other primit
 The unit suffix form can only target unit classes whose construction is satisfied by that implicit value. Unit constructors may still validate or normalize the value.
 
 ```first
-📏 positiveM is AnyNumeric (
+positiveM is AnyNumeric (
 	declare unit
 	
 	constructor() (
@@ -133,11 +131,11 @@ The annotation supplies the unit target.
 When a binary operation combines units in the same primitive-class inheritance chain, both operands are adopted into the most-derived unit type involved in the operation.
 
 ```first
-📏 m is AnyNumeric (
+m is AnyNumeric (
 	declare unit
 )
 
-📏 msv is m (
+msv is m (
 	declare unit
 )
 
@@ -165,11 +163,11 @@ distance is m = 10m + 5msv
 Binary operations do not work across unrelated unit types unless an operator overload defines the operation.
 
 ```first
-📏 m is AnyNumeric (
+m is AnyNumeric (
 	declare unit
 )
 
-📏 kg is AnyNumeric (
+kg is AnyNumeric (
 	declare unit
 )
 
@@ -179,15 +177,15 @@ value = 10m + 5kg // ❌ compiler notice
 Libraries may define conversions or cross-unit operations with normal primitive-class operator overloads.
 
 ```first
-📏 inch is AnyNumeric (
+inch is AnyNumeric (
 	declare unit
 )
 
-📏 cm is AnyNumeric (
+cm is AnyNumeric (
 	declare unit
 	
-	+ (other is inch) is cm (
-		return cm(this + other.toCm())
+	operator + (this, that is inch) (
+		return cm(this + that.toCm())
 	)
 )
 ```
@@ -204,22 +202,22 @@ ratio = 10m / 2m
 By default, these operations follow the unit's primitive-class numeric behavior. If a library wants `m * m` to return an area unit, or `m / m` to return a bare number, it defines those operator overloads.
 
 ```first
-📏 m2 is AnyNumeric (
+m2 is AnyNumeric (
 	declare unit
 )
 
-📏 m is AnyNumeric (
+m is AnyNumeric (
 	declare unit
 	
-	* (other is m) is m2 (
-		return m2(this * other)
+	operator * (this, that is m) (
+		return m2(this * that)
 	)
 )
 ```
 
 ## Equality
 
-Loose equality compares the underlying data unless a unit type overloads `==`.
+Loose equality compares the underlying data unless a unit type overloads `== !=`.
 
 ```first
 10m == 10 // true

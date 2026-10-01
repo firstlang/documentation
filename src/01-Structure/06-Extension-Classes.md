@@ -29,7 +29,7 @@ An extension class can target primitives, reference classes, and primitive class
 )
 ```
 
-Extension classes may target local types, imported package types, primitives, primitive groups, and other target families accepted by the type system. They do not structurally merge into the target. They attach callable behavior and eligible operator overloads while leaving the target's owned declaration unchanged.
+Extension classes may target local types, imported package types, primitives, primitive groups, and other target families accepted by the type system. They do not structurally merge into the target. They attach callable behavior while leaving the target's owned declaration unchanged.
 
 First does not have a capitalized `String` object type. `string` is the string type.
 
@@ -91,11 +91,10 @@ For class targets, an extension member can mutate public mutable properties on `
 
 ## Members
 
-Extension classes can contain functions, getters, setters, and operator overload functions.
+Extension classes can contain functions, getters, and setters.
 
 They cannot contain fields, constructors, ghosts, nested spaces, or nested classes.
-
-An extension operator overload is only allowed when the operator has not already been overloaded for the target.
+They cannot contain operator overloads.
 
 ## Lookup
 

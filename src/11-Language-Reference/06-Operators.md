@@ -61,15 +61,17 @@ Compound assignment operators are not separately overloaded. They use the corres
 | Operator | Name | Result | Overloadable |
 | -------- | ---- | ------ | ------------ |
 | `==` | Loose equal | `boolean` | Yes |
-| `!=` | Not loose equal | `boolean` | No |
+| `!=` | Not loose equal | `boolean` | Yes, through `== !=` |
 | `===` | Strict equal | `boolean` | No |
 | `!==` | Not strict equal | `boolean` | No |
-| `<` | Less than | `boolean` | Yes |
-| `<=` | Less than or equal | `boolean` | Yes |
-| `>` | Greater than | `boolean` | Yes |
-| `>=` | Greater than or equal | `boolean` | Yes |
+| `<` | Less than | `boolean` | Yes, through `< >=` |
+| `<=` | Less than or equal | `boolean` | Yes, through `> <=` |
+| `>` | Greater than | `boolean` | Yes, through `> <=` |
+| `>=` | Greater than or equal | `boolean` | Yes, through `< >=` |
 
 Loose equality is semantic equality. It may use operator overloads, numeric conversion, or unit underlying-value comparison where those rules apply. Strict equality is exact equality: the type identity and stored value must match, and the operator cannot be overloaded.
+
+Comparison overloads are declared as fixed pairs. `operator == !=` defines `==` directly and derives `!=` by boolean negation. `operator < >=` defines `<` directly and derives `>=` by boolean negation. `operator > <=` defines `>` directly and derives `<=` by boolean negation.
 
 ## Logical And Coalescing
 
@@ -111,6 +113,6 @@ First does not include `++` or `--`. Use explicit assignment or compound assignm
 
 ## Evaluation And Recovery
 
-Operands are evaluated left-to-right and exactly once. Short-circuiting forms evaluate the right operand only when their condition requires it. Compound assignment evaluates the target reference once, then the right operand once, then applies the underlying operator and writes back.
+Operands are evaluated left-to-right and exactly once. Short-circuiting forms evaluate the right operand only when their condition requires it. Compound assignment evaluates the target reference once, then the right operand once, then applies the underlying operator and writes back. If the operator result cannot be assigned back to the target type, the compound assignment produces a compiler notice.
 
 Invalid operator use produces a compiler notice. Implementations may recover by pruning, substituting, or simplifying invalid parts of the expression so the surrounding program can continue to parse and be analyzed. Recovery is implementation-defined and authors must not rely on the recovered value or execution result.
