@@ -54,15 +54,19 @@ Begin the file with:
 
 Use this exact structure for every item:
 
-```markdown
+````markdown
 ## N. Short title
 
 **Ambiguity:** State the unresolved question and why the current material does not determine it.
 
 **Proposed resolution:** State one concrete rule, with essential rationale, consequences, or examples.
 
-agree
 ```
+Code example explaining the proposal. You may omit this example if you cannot reasonably illustrate the proposal in a code sample.
+```
+
+agree
+````
 
 Use one blank line between the proposal, `agree`, and the next heading. Verify that the file contains exactly one numbered heading and one standalone `agree` line per ambiguity.
 
