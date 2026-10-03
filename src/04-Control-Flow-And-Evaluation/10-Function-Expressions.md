@@ -8,13 +8,7 @@ numbers.map(value => value + 1)
 addFn = (a is int, b is int) => a + b
 ```
 
-Use `=>` only for executable function-expression bodies. Callable types use `is` and do not contain `=>`.
-
-```first
-Adder is alias of (a is int, b is int) is int
-
-addFn is Adder = (a, b) => a + b
-```
+Use `=>` for executable function-expression bodies. See [[15-Aliases]] for callable types, assignment compatibility, and type extraction.
 
 ## Parameters
 
@@ -106,32 +100,6 @@ zeroFn() // 0
 
 `declare noImplicitNullReturns` reports unannotated function expressions whose fall-through implicitly returns `null`. It does not change inference or runtime behavior.
 
-## Callable Types
-
-A callable type is written as `(parameters) is Result`.
-
-```first
-ReadInt is alias of () is int
-Transform is alias of (value is int) is string
-```
-
-Callable result types nest to the right.
-
-```first
-Factory is alias of () is () is int
-factoryFn is Factory = () => () => 42
-factoryFn()() // 42
-```
-
-Name callable types with aliases before forming arrays, nullable callables, or overload-like unions.
-
-```first
-readers is ReadInt[] = []
-maybeReader is ReadInt or null = null
-```
-
-Callable type extraction with `.return` and `.arguments` is defined in [[../../03-Type-System-Features/04-Aliases]].
-
 ## Defaults And Rest
 
 Function expressions support optional parameters, default values, and a final rest parameter.
@@ -149,49 +117,6 @@ chooseFn = (a is int = nextNumber(), b is int = a + 1) => b
 chooseFn(10)
 // nextNumber runs, a remains 10, b becomes 11.
 ```
-
-Default expressions belong to the implementation, not to callable types. A type-only signature may write `= ?`, but not an executable default.
-
-```first
-Connector is alias of (port is int = ?) is int
-```
-
-## Assignment Compatibility
-
-Callable assignment uses exact positional parameter-type matching. Result types may be covariant: an implementation may return a more specific type than the destination requires.
-
-```first
-DogReader is alias of (dog is Dog) is Animal
-
-readDogFn = (dog is Dog) is Dog => makeDog()
-readerFn is DogReader = readDogFn
-// Valid: the parameter type matches and Dog is usable as Animal.
-
-readAnimalFn = (animal is Animal) is Dog => makeDog()
-badReaderFn is DogReader = readAnimalFn
-// Invalid: Animal is not exactly Dog.
-```
-
-A callable may ignore trailing supplied arguments only when the destination permits those arguments and the accepted prefix types match exactly.
-
-## Callable Unions
-
-A union of callable aliases in callable position acts as a simple overload list. A call resolves to the first callable member in alias order whose signature accepts the provided arguments. Later, more specific signatures do not win.
-
-```first
-TextReader is alias of (value is int) is string
-NumberReader is alias of (value is int) is int
-
-Reader is alias of TextReader or NumberReader
-readerFn is Reader
-
-result = readerFn(1)
-// Uses TextReader because it is first.
-```
-
-If an alias can be non-callable, call it only after narrowing to a callable type.
-
-Callable intersections are unsupported.
 
 ## Captures
 

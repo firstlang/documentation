@@ -46,7 +46,7 @@ Generic aliases follow [[02-Generics]].
 
 ## Callable Aliases
 
-A callable type is written as `(parameters) is Result`.
+A callable type is written as `(parameters) is Result`. Callable types use `is` and do not contain `=>`.
 
 ```first
 ReadInt is alias of () is int
@@ -66,7 +66,13 @@ readers is ReadInt[] = []
 maybeReader is ReadInt or null = null
 ```
 
-A union of callable aliases in callable position acts as a simple overload list. Calls resolve to the first callable member in alias order whose signature accepts the provided arguments.
+Default expressions belong to the implementation, not to callable types. A type-only signature may write `= ?`, but not an executable default.
+
+```first
+Connector is alias of (port is int = ?) is int
+```
+
+A union of callable aliases in callable position acts as a simple overload list. Calls resolve to the first callable member in alias order whose signature accepts the provided arguments. Later, more specific signatures do not win.
 
 ```first
 TextReader is alias of (value is int) is string
@@ -88,6 +94,24 @@ MaybeReader is alias of TextReader or string
 `MaybeReader` cannot be called until narrowed to `TextReader`.
 
 Callable intersections are unsupported.
+
+## Assignment Compatibility
+
+Callable assignment uses exact positional parameter-type matching. Result types may be covariant: an implementation may return a more specific type than the destination requires.
+
+```first
+DogReader is alias of (dog is Dog) is Animal
+
+readDogFn = (dog is Dog) is Dog => makeDog()
+readerFn is DogReader = readDogFn
+// Valid: the parameter type matches and Dog is usable as Animal.
+
+readAnimalFn = (animal is Animal) is Dog => makeDog()
+badReaderFn is DogReader = readAnimalFn
+// Invalid: Animal is not exactly Dog.
+```
+
+A callable may ignore trailing supplied arguments only when the destination permits those arguments and the accepted prefix types match exactly.
 
 ## Type Extraction
 
