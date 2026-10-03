@@ -47,10 +47,10 @@ isSuccess(status is Status) is bool (
 
 ## A Generic Identity Function
 
-Generic type parameters appear in the ordinary parameter list.
+Generic type parameters appear first in the ordinary parameter list. Their uppercase names distinguish them from runtime parameters.
 
 ```first
-identity(T is type, value is T) is T (
+identity(T, value is T) is T (
 	return value
 )
 

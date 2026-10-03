@@ -1,257 +1,214 @@
-The generics in First are inspired by TypeScript, but with a reduced feature set in order to work towards the language's goals of maximizing intelligibility, as well as to allow the code to more naturally be translated into Rust.
+# Generics
 
-This document is disorganized—parts of it are being moved into aliases and attestations. See [[04-Aliases]] for the public alias rules and callable type extraction.
+Generics let one declaration work with several types while preserving static type information. First's generics are inspired by TypeScript, with a reduced feature set designed for intelligibility and straightforward lowering to statically compiled targets.
 
----
+Classes, functions, selection types, and aliases may be generic.
 
-## Type Aliases
+## Generic Parameters
 
-In First, **type aliases** are always defined using the `alias of` compound keyword:
-
-```
-Password is alias of string
-```
-
-This declares that `Password` is strictly equivalent to `string`. Type aliases are purely structural, they don't create a more derived type in the internal type graph.
-
-By contrast, **classes** are nominally typed and therefore introduce new semantic nodes:
-
-```
-Password is alias of string
-Passphrase is string (
-	
-)
-
-password is Password = "abc"
-passphrase = Passphrase("this is my passphrase")
-
-User (
-	export password is var Password
-	export passphrase is var Passphrase
-)
-
-user = User()
-
-// ✅ works because Password is just an alias for string
-user.password = passphrase 
-
-// ❌ fails because even though it's based on string,
-// Passphrase is a distinct, more derived type node
-user.passphrase = password
-```
-
-To be clear, a bare alias does nothing more than rename the type. Its main use comes when building complex type shapes.
-
----
-
-# Complex Type Aliases 
-
-Most type aliases in the code will have more complexity than the previous example. Below is a walk through of the possible variants the type alias syntax.
-
-Without parens:
-
-```
-MyAlias1 is alias of string
-MyAlias2 is alias of string or boolean or int
-```
-
-More complex alias expressions may use the full alias type-expression space after `is alias of`.
-
-Generic aliases put their type parameters in the alias header, after the alias name and before `is alias of`.
-
-```
-MyAlias (T is type) is alias of SomeType(T)
-```
-
-### Declaring Generic Type Parameters
-
-- `X is type` — declares a generic type parameter with no constraints.
-- `X is type of Y` — constrains the generic to a specific type or primitive.
+Generic parameters share the ordinary parameter list with runtime parameters. An uppercase-leading parameter is generic; a lowercase-leading parameter is a runtime parameter.
 
 ```first
-Foo(T is type, U is type of Node) (
+identity(T, value is T) is T (
+	return value
 )
-
-Thing (T is type, U is type of Node) is alias of Pair(T, U)
 ```
 
-- `T is type` → a completely unconstrained generic.
-- `U is type of number` → a generic constrained to `number`.
+A bare generic parameter is unconstrained. This follows the ordinary rule that an omitted type annotation means `unknown`.
 
-# Critical Differences With TypeScript
-
-TypeScript, like most languages, use a different semantic region for generic type parameters and standard parameters. First collapses this distinction because managing two separate parameter spaces is too difficult to represent visually, and also makes the model more academic and less friendly to newcomers.
-
-First merges the generic type parameters in with standard type parameters. This is done in an effort to streamline the display of the code, especially in the editor. It therefore needs to have slightly different semantics. For example, observe the differences between TypeScript and First.
-
-TypeScript:
+Annotate a generic parameter to constrain it. `TCol is Collection` is analogous to TypeScript's `TCol extends Collection`.
 
 ```first
-class Foo<T extends Node>
-{
-	method<U>(a: T, b: U)
-	{
-	
-	}
+first(T, TCol is Collection(T), values is TCol) is T (
+	return values[0]
+)
+```
+
+A type argument satisfies its constraint when it is assignable to the constraint under First's ordinary compatibility rules. Nominal classes use inheritance, aliases use their expanded structural types, selections use selected-value compatibility, and primitive groups use declared membership. A constraint may reference an earlier generic parameter.
+
+Generic parameters must precede runtime parameters. A generic parameter may refer only to earlier generic parameters.
+
+## Generic Functions
+
+Function calls infer omitted generic arguments from runtime arguments first and the expected result type second.
+
+```first
+name = identity("Ada")
+```
+
+When inference cannot determine one unique satisfying type, supply generic arguments in the declared leading positions.
+
+```first
+empty = identity(string, "")
+```
+
+Generic arguments are compile-time arguments. They do not become runtime values.
+
+A reference to a generic function preserves its generic signature. Assignment to a monomorphic callable type specializes it using the expected signature.
+
+```first
+IntIdentity is alias of (value is int) is int
+intIdentity is IntIdentity = identity
+```
+
+Generic function expressions follow the same rules.
+
+```first
+identityFn = (T, value is T) is T => value
+```
+
+## Generic Classes
+
+A class declares its generic parameters on its constructor. The parameters have declaration-wide type scope, including the class body, member signatures, member bodies, and inheritance clause.
+
+```first
+Box (
+	constructor(T, value is T)
+	value is T
+)
+```
+
+A generic class must have an explicit constructor signature. Its body may be omitted under the ordinary constructor rules. A synthesized constructor may propagate an already-bound parent specialization, but it cannot introduce generic parameters.
+
+In a type position, generic application specializes the class type.
+
+```first
+textBox is Box(string)
+```
+
+In an expression position, the same form constructs the specialized class. Construction may infer omitted type arguments from runtime arguments.
+
+```first
+explicitBox = Box(string, "hello")
+inferredBox = Box("hello")
+```
+
+An inheritance clause may refer to generic parameters declared by the constructor. The compiler collects the constructor signature before resolving the class header.
+
+```first
+ChildBox is Box(T) (
+	constructor(T, value is T)
+)
+```
+
+A nested class does not implicitly receive an enclosing class's generic arguments. It declares and receives its own arguments.
+
+## Generic Selection Types
+
+Selection types declare generic parameters after the selection name and before `is`.
+
+```first
+Result(T, E) is one case of (
+	ok(value is T)
+	error(value is E)
+)
+```
+
+Applications require exactly one explicit type argument per declared parameter. Missing, excess, and partial applications are invalid.
+
+```first
+result is Result(string, Error)
+```
+
+The same parameter rules apply to `one of`, `many of`, and `one case of` declarations.
+
+## Generic Aliases
+
+Aliases use the same generic parameter rules.
+
+```first
+Pair(T, U) is alias of {
+	first is T
+	second is U
 }
 ```
 
-First:
+Alias applications require every declared type argument and do not support partial application.
 
+```first
+pair is Pair(string, int)
 ```
-Foo (
-	(T is type of Node)
-	
-	method(U is type, a is T, b is U) (
-	
+
+See [[15-Aliases]] for alias type expressions and extraction.
+
+## Compatibility And Editability
+
+Immutable generic values are covariant across nominal subtype relationships.
+
+```first
+dogs is Dog[]
+animals is Animal[] = dogs
+```
+
+`var` permits rebinding and does not change variance.
+
+```first
+animals is var Animal[] = dogs
+animals = [Cat()]
+```
+
+An `editable` specialization is invariant wherever editing could replace a value involving the generic parameter.
+
+```first
+editableDogs is editable Dog[]
+editableAnimals is editable Animal[] = editableDogs // Invalid.
+```
+
+An immutable or narrower specialization may widen into a new editable specialization through an independent copy or conversion.
+
+```first
+editableAnimals is editable Animal[] = editableDogs.copy()
+```
+
+Aliases remain transparent and use the compatibility of their expanded types. Selection specializations apply ordinary selection compatibility after substituting their generic arguments. Callable parameter and result compatibility follows the callable rules.
+
+## Specialization
+
+First monomorphizes each concrete generic application. Generic parameters and explicit generic arguments exist at compile time and are not passed or stored as runtime values. Each concrete nominal class specialization has distinct static type identity; aliases remain transparent.
+
+```first
+name = identity("Ada")
+count = identity(1)
+```
+
+The compiler produces separate `string` and `int` specializations. Neither call passes a runtime type descriptor for `T`.
+
+Generic type attestations such as `T is Animal` are not supported. Attest runtime values instead.
+
+```first
+inspect(T is Animal, value is T) (
+	if (value is Dog) (
+		useDog(value)
 	)
 )
 ```
 
-Key differences:
+## Type Extraction
 
-- Class generic type parameters go on the constructor, not the class definition itself
-- Bare `<T>`-style definitions don't have a parallel. Instead, you need to explicitly annotate `T is type`
-- Type constraints are defined by using the `is type of X` syntax instead of `extends`.
-
-## Unions and Intersections
-
-First supports the same unions and intersections features as TypeScript, however, instead of the `|` and `&` operators, First uses the `or` and `and` keywords.
-
-```
-Primitives is alias of string or int or boolean
-ApiObject is alias of ApiObjectV1 and ApiObjectV2
-```
-
-Unlike TypeScript, intersections over primitives are prohibited.
-
----
-
-## Type Extractions
-
-Type Extractions allow you to **carry type information from values, functions, or class structures into type definitions**. They are a powerful way to reflect the structure of code into type aliases.
-
-By default, extractions that include names and types produce **object shapes**. They can be coerced into arrays or singular types when the context requires.
-
-### **Extraction Targets**
-
-|Target|Extraction Result|
-|---|---|
-|`Function`|object with key = function name, value = return type|
-|`Function.return`|return type of function (key = `null`)|
-|`Function.arguments`|array of `[name: string, type: Type]` tuples for each argument|
-|`Function.arguments[n]`|single `[name, type]` tuple; negative indices supported like JavaScript arrays|
-|`Class.method`|same as `Function` for class methods|
-|`Class.method.return`|return type of the method|
-|`Class.method.arguments`|array of `[name, type]` tuples for method parameters|
-|`Class.arguments`|array of `[name, type]` tuples for constructor parameters|
-
-### **Rules and Behaviours**
-
-1. **Default Shape**
-    - All extractions default to **object shapes**.
-    - Keys are names (argument names, method names, function names), and values are the associated types.
-    - If the extraction is used in a **context expecting an array**, only the list of types is carried forward.
-    - If the extraction is used in a **context expecting a single type**, a chain-of-types is produced.
-
-2. **Arguments Tuples**
-    - `.arguments` returns arrays of **two-element tuples**: `[name: string, type: Type]`.
-    - Access `[n]` to retrieve a specific tuple; negative indices (`-1`, `-2`, …) are supported.
-
-3. **Optional and Default Parameters**
-    - Default values are **erased**; only the type matters.
-    - Optional parameters are flattened into `T or null` to maintain array consistency.
-
-4. **Class Methods**
-    - Only real class methods can be extracted; fields storing function types cannot be introspected for arguments.
-    - Extracted `.method` types operate entirely at the **type level**.
-
-5. **Nested Extractions**
-    - Extractions can be nested inside objects:
-
+A generic function must be specialized before its signature can be extracted. An expected callable alias can provide that specialization.
 
 ```first
-Nested is alias of {
-	f1 is Fn1.return
-	f2 is Fn2.arguments
-}
+StringIdentity is alias of (value is string) is string
+stringIdentity is StringIdentity = identity
+StringIdentityReturn is alias of stringIdentity.return
 ```
 
-- `f2` resolves to an **object** where keys are argument names and values are argument types.
-- Arrays or chain-of-types only appear if explicitly coerced.
-
----
-
-### **Examples**
+To keep the extracted alias generic, explicitly declare and forward its generic parameters through a generic callable alias.
 
 ```first
-// Extract return type of a function
-Result is alias of someFn.return
-
-// Extract all argument types as tuples
-Args is alias of someFn.arguments
-FirstArg is alias of someFn.arguments[0]
-LastArg is alias of someFn.arguments[-1]
-
-// Extract class method arguments
-MethodArgs is alias of SomeClass.someMethod.arguments
-MethodReturn is alias of SomeClass.someMethod.return
-
-// Extract constructor arguments
-CtorArgs is alias of SomeClass.arguments
+Identity(T) is alias of (value is T) is T
+IdentityReturn(T) is alias of Identity(T).return
 ```
+
+An extraction such as `identity.return` is invalid because `T` is unbound. A generic class may be specialized directly in an extraction target.
 
 ```first
-// extraction produces an object
-TExample is alias of {
-	innerResult is SomeClass.someMethod.return
-	argsArray is [ ...SomeFn.arguments ] // coerces to array of types only
-	argsObject is SomeFn.arguments
-	argsObjectExtended is {
-		...SomeFn.arguments
-		property1 is string
-		property2 is string
-	}
-}
+BoxArguments is alias of Box(string).arguments
 ```
 
----
+## Built-In Utilities
 
-This structure eliminates latent objects and makes **extractions predictable**:
-
-- default → object shape
-- coerced → array of types or single type chain
-
-It also preserves argument names and types consistently for better type reflection.
-
----
-
-## Control Flow Type Attestations
-
-Because generics in First are monomorphic, you can **inspect type variables in control flow**:
-
-```first
-foo(T is type of Animal) (
-	// Affirmative attestation
-	if (T is Dog) (
-		console.log("T is a dog")
-	)
-	
-	// Negated attestation
-	if (T is not Cat) (
-		console.log("T is not a cat")
-	)
-)
-```
-
-- `if (T is X)` → checks if the generic type equals `X`
-- `if (T is not X)` → checks if the generic type is not `X`
-
----
-
-## Built-in Utilities
-
-First includes standard type utilities. Parentheses are used instead of angle brackets:
+First provides compiler-implemented generic type transformations rather than exposing TypeScript-style mapped types.
 
 ```first
 Partial(T)
@@ -267,104 +224,4 @@ ToSnake(T)
 FromSnake(T)
 ```
 
-These can be used **anywhere a type is allowed**.
-
-
----
-
-## Examples
-
-### Simple Alias
-
-```first
-Password is alias of string
-```
-
-```first
-TFoo is alias of Object1 and Object2
-
-ObjectA (T is type) is alias of (
-	a is T
-)
-
-ObjectB (T is type) is alias of (
-	b is T
-)
-
-MyAlias3 (T1 is type, T2 is type of TFoo) is alias of (
-	declare someInvariant
-
-	ObjectA(T1) and ObjectB(T2)
-)
-```
-
-### Generic Function with Type Attestation
-
-```first
-wrapInArray(T is type, arg is T or T[]) (
-	if (arg is T[]) (
-		return arg
-	)
-	
-	return [arg]
-)
-```
-
----
-
-## Provisional Inline Type Rules
-
-The following language decisions were made while introducing the initial parser grammar. Preserve them when this document is reorganized and reconciled with the alias and attestation documentation.
-
-First deliberately distinguishes between type expressions written inline in annotations and the fuller type language available to `alias of` declarations. Inline annotations must remain visually linear. When a type requires precedence grouping or mixes composition operators, it must be given a name with `alias of`.
-
-Inline type positions currently include function parameters, generic constraints, function return annotations, fields, and local bindings. They accept:
-
-- primitive, named, and generic-parameter types;
-- generic application using parentheses, such as `Result(string, User)`;
-- any number of nested array suffixes, such as `T[][]`;
-- flat unions of any length using `or`;
-- flat intersections of any length using `and`;
-- the `editable` type qualifier.
-
-Standalone grouping parentheses are not permitted in inline type expressions. Mixing `and` and `or` in one inline expression is also not permitted. These forms must be moved into an alias:
-
-```first
-// Not legal inline:
-load() is (Cached or Remote)[] (...)
-combine() is A and B or C (...)
-
-// Name the composition instead:
-LoadSource is alias of Cached or Remote
-Combined is alias of A and B or C
-
-load() is LoadSource[] (...)
-combine() is Combined (...)
-```
-
-Parentheses used for generic application are not grouping parentheses and remain legal inline:
-
-```first
-load() is Result(Error, User[]) (...)
-```
-
-Generic type parameters share the ordinary parameter list with runtime parameters. They use `T is type` or `T is type of Constraint`; constraints accept the same inline type-expression space as other annotations. Canonically, generic parameters appear before runtime parameters. Parsing may retain a noncanonical source order so malformed or merge-affected code can still enter the editor; validation and canonical reordering are separate concerns.
-
-Generic application never uses angle brackets. Angle brackets remain available for markup and comparison syntax.
-
-`var` and `editable` represent different concerns:
-
-- `var` belongs to a binding and permits that binding to be rebound. It is not part of a type and cannot appear in a type alias.
-- `editable` qualifies the referenced value/type as editable. It may therefore appear in an inline annotation or a type alias.
-
-Whether parameters may use `var` remains an independent language decision. It does not affect the type-expression grammar.
-
-TypeScript-style literal string and number types are not part of First. Their common role as ad hoc enumerations is served by First's explicit selection types, which should be used instead.
-
-Primitive types may participate in unions:
-
-```first
-PrimitiveResult is alias of string or int or null
-```
-
-Primitive types may not participate in intersections. Expressions such as `int and string` describe an impossible value rather than a useful First type. Intersection operands must therefore be named or composed non-primitive types; this restriction is represented directly by the intersection production rather than deferred to type checking.
+Generic application uses parentheses, never angle brackets. The utilities are built into the compiler and cannot be defined in ordinary First code.

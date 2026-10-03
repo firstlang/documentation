@@ -32,22 +32,7 @@ image(url is Url)
 
 The declaration has no implementation body. The case list defines the constructors and the possible payload shapes.
 
-## Generic Cases
-
-`one case of` declarations may be generic. Generic parameters are written in the declaration header, after the selection name and before `is`.
-
-```first
-Result (T is type, E is type) is one case of (
-	ok(value is T)
-	error(value is E)
-)
-```
-
-The header parameter list may contain only type parameters, such as `T is type` or `T is type of Constraint`. Case payloads then use those type parameters as ordinary types.
-
-```first
-message is Result(string, Error)
-```
+Generic `one case of` declarations follow [[02-Generics]].
 
 ## Construction
 

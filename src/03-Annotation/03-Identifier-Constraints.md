@@ -61,7 +61,7 @@ App (
 		name is string
 	)
 
-	Result (T is type, E is type) is one case of (
+	Result(T, E) is one case of (
 		ok(value is T)
 		error(value is E)
 	)

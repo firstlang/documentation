@@ -24,7 +24,7 @@ A single untyped parameter may omit parentheses.
 names.map(name => name.length)
 ```
 
-Use parentheses for zero parameters, multiple parameters, typed parameters, optional parameters, default values, rest parameters, generic parameters, and explicit result types.
+Use parentheses for zero parameters, multiple parameters, typed parameters, optional parameters, default values, rest parameters, and explicit result types.
 
 ```first
 readFn = () => readValue()
@@ -32,9 +32,9 @@ readFn = () => readValue()
 addFn = (a is int, b is int) => a + b
 
 chooseFn = (value is int = nextNumber()) => value
-
-identityFn = (T is type, value is T) is T => value
 ```
+
+Generic function expressions follow [[02-Generics]].
 
 When a parameter type is omitted, First infers it from a unique expected callable signature. If there is no unique expected signature, the parameter is `unknown`.
 

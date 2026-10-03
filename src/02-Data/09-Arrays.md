@@ -33,7 +33,7 @@ items is editable number[]
 To make the array both have a mutable binding and mutable contents, you'd need to use both annotations together (and hope to not get fired)
 
 ```first
-items is var editable number[]
+items is editable var number[]
 
 0 to 10 each i (
 	items.push(i)
@@ -43,7 +43,7 @@ items is var editable number[]
 To make an array with a mutable binding, editable contents, but a fixed length, the code would look like:
 
 ```first
-items is var editable number[10]
+items is editable var number[10]
 
 0 to 10 each i (
 	items.push(i)

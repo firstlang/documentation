@@ -42,7 +42,7 @@ Nested arrays arise naturally when a program groups sequential readings into bat
 ```first
 groupMeasurements(values is int[], groupSize is int) is int[][] (
 	groups is editable int[][]
-	current is var editable int[]
+	current is editable var int[]
 	
 	values each value index (
 		current.push(value)

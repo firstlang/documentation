@@ -209,25 +209,7 @@ The access path is different from a top-level call, but the function declaration
 
 ## Generic Functions
 
-Generic functions use leading parameters rather than TypeScript-style angle brackets.
-
-```first
-identity(T is type, value is T) is T (
-	return value
-)
-```
-
-The editor may draw generic parameters differently from ordinary runtime parameters, but they are still part of the function's parameter list.
-
-At the call site, generic parameters do not normally appear in the call signature. The editor can reveal them when requested.
-
-This is invalid:
-
-```first
-identity<T>(value is T) is T (
-	return value
-)
-```
+Functions may be generic. Generic declaration, inference, specialization, and application rules are defined in [[02-Generics]].
 
 ## Function Expressions
 
