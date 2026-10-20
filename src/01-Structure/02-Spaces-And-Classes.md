@@ -92,6 +92,8 @@ Merging recursively unions distinct nested members. Duplicate fields, functions,
 
 Imports belong to the logical merged container. Identical imports may coalesce. Conflicting aliases or package versions in the same container produce notices.
 
+Target declarations also belong to the logical merged space. Repeated configurations for the same backend merge with shallow copy-over behavior. See [[02-Target-Configuration]].
+
 ## Empty Spaces
 
 An empty declaration is a non-constructible space:

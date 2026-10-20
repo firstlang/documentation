@@ -24,7 +24,7 @@ first(T, TCol is Collection(T), values is TCol) is T (
 )
 ```
 
-A type argument satisfies its constraint when it is assignable to the constraint under First's ordinary compatibility rules. Nominal classes use inheritance, aliases use their expanded structural types, selections use selected-value compatibility, and primitive groups use declared membership. A constraint may reference an earlier generic parameter.
+A type argument satisfies its constraint when it is assignable to the constraint under First's ordinary compatibility rules. Nominal classes use inheritance, aliases use their expanded structural types, and selections use selected-value compatibility. A constraint may reference an earlier generic parameter.
 
 Generic parameters must precede runtime parameters. A generic parameter may refer only to earlier generic parameters.
 

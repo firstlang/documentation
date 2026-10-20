@@ -24,7 +24,7 @@ Message is one case of (
 
 User and Admin denote class types. Person accepts their instances or null; declaring it does not construct instances. A space is not a type.
 
-Selection declarations may be generic under [[02-Generics]].
+Selection declarations may be generic under [[03-Generics]].
 
 ## Entry Forms
 

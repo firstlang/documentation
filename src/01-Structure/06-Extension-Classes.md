@@ -29,23 +29,9 @@ An extension class can target primitives, reference classes, and primitive class
 )
 ```
 
-Extension classes may target local types, imported package types, primitives, primitive groups, and other target families accepted by the type system. They do not structurally merge into the target. They attach callable behavior while leaving the target's owned declaration unchanged.
+Extension classes may target local types, imported package types, primitives, and other target families accepted by the type system. They do not structurally merge into the target. They attach callable behavior while leaving the target's owned declaration unchanged.
 
 First does not have a capitalized `String` object type. `string` is the string type.
-
-## Primitive Groups
-
-Some primitive families are commonly extended together. The standard library provides a series of endowed primitive groups (defined in [[03-Numbers]]) that can be extended.
-
-```first
-🔌 IntegerFormatting is extension of AnyInteger (
-	
-	toHexString() is string (
-	)
-)
-```
-
-These groups are special standard library targets. They stand for a set of primitive types and avoid requiring the same extension to be written separately for each primitive.
 
 ## Multiple Targets
 

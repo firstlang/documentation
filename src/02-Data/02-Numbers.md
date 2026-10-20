@@ -173,25 +173,9 @@ Cross-compilation uses the destination target. The architecture of the machine r
 
 `number` is always an alias for `f64` and is not platform-dependent.
 
-## Primitive Groups
-
-Primitive groups describe families of built-in primitives. They are primarily used as primitive-class bases and extension targets.
-
-- `AnyNumeric` contains every integer, fixed decimal, float, arbitrary-precision number, and `char`.
-- `AnyInteger` contains every fixed-width integer, `big`, and `char`.
-- `AnySignedInteger` contains the signed fixed-width integers and `big`.
-- `AnyUnsignedInteger` contains the unsigned fixed-width integers.
-- `AnyDecimal` contains every fixed decimal, float, and `big.N` type.
-- `AnyFixedDecimal` contains every fixed-width fixed decimal.
-- `AnySignedFixedDecimal` contains the signed fixed-width fixed decimals.
-- `AnyUnsignedFixedDecimal` contains the unsigned fixed-width fixed decimals.
-- `AnyFloat` contains `f16`, `f32`, `f64`, and `f128`.
-
-Membership in a primitive group classifies a type but does not grant it additional operators. In particular, `char` belongs to `AnyNumeric` and `AnyInteger` for constraints and ranges, but characters do not support arithmetic without conversion to an integer.
-
 ## The Primitive Top Type
 
-`primitive` is the top type of every built-in and user-defined primitive. A primitive class may inherit from a built-in primitive, a primitive group, another primitive class, or directly from `primitive` to define a fresh value representation. See [[07-Primitive-Classes]].
+`primitive` is the top type of every built-in and user-defined primitive. A primitive class may inherit from a built-in primitive, another primitive class, or directly from `primitive` to define a fresh value representation. See [[07-Primitive-Classes]].
 
 ```first
 writePrimitive(value is primitive) (

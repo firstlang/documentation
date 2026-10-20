@@ -28,7 +28,7 @@ addFn = (a is int, b is int) => a + b
 chooseFn = (value is int = nextNumber()) => value
 ```
 
-Generic function expressions follow [[02-Generics]].
+Generic function expressions follow [[03-Generics]].
 
 When a parameter type is omitted, First infers it from a unique expected callable signature. If there is no unique expected signature, the parameter is `unknown`.
 

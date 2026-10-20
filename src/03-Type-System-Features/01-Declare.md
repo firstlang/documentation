@@ -9,7 +9,7 @@ They can be applied to spaces, classes, one-of's / one-value-of's / many-of's, a
 
 ## Scope Legend
 
-S = Space
+S = Space (including the project root)
 C = Class
 O = One-of
 F = Function
@@ -18,6 +18,7 @@ F = Function
 
 | Member                                       | Description                                                                                                                                                                                                                                                                                               | Scope |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| declare target [language] | Selects and configures a backend for a space. See [[02-Target-Configuration]]. | S |
 | declare sealed                               | Defines the class as not inheritable (sealed)                                                                                                                                                                                                                                                             | C     |
 | declare union                                | Declares a type as a structural union                                                                                                                                                                                                                                                                     | C     |
 | declare pack                                 | Declares a type as a bit-packed class, primitive class, or array                                                                                                                                                                                                                                          | C     |
@@ -49,9 +50,6 @@ F = Function
 | declare markupFactory                        | Declares the function that markup literals call behind the scenes in the given scope.                                                                                                                                                                                                                     | SC    |
 | declare markdownFrontMatterFactory           | ?                                                                                                                                                                                                                                                                                                         | SC    |
 | declare frontMatter                          | Declares a type as being viable for front-matter matching.                                                                                                                                                                                                                                                | C     |
-| declare noEcmaStandardLibrary                | Prevents the ECMA-262 built-ins from being included in the compilation output.                                                                                                                                                                                                                            | S     |
-| declare noRustStandardLibrary                | Prevents the Rust standard library from being included in the output.                                                                                                                                                                                                                                     | S     |
-| declare external                             | Preserves the functions name for FFI compatibility in Rust outputs. Has the effect of no_mangle in the emitted Rust.                                                                                                                                                                                      | SCF   |
 | declare worker W                             | Defines the thread on which code in a given scope executes                                                                                                                                                                                                                                                | SCF   |
 | declare size [primitive]                     | Fallback for rust's `#[repr(primitive)]`. Used on one-of's                                                                                                                                                                                                                                                | O     |
 | declare enableNanProtection                  | Causes the interpreter to break whenever a nan value is generated                                                                                                                                                                                                                                         | SCF   |

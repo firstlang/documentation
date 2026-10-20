@@ -209,7 +209,7 @@ The access path is different from a top-level call, but the function declaration
 
 ## Generic Functions
 
-Functions may be generic. Generic declaration, inference, specialization, and application rules are defined in [[02-Generics]].
+Functions may be generic. Generic declaration, inference, specialization, and application rules are defined in [[03-Generics]].
 
 ## Function Expressions
 

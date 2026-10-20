@@ -14,11 +14,9 @@ A root primitive class may use one of three base forms:
 
 - `primitive`
 - a concrete primitive, such as `u64`, `string`, `f32`, or `boolean`
-- a primitive group, such as `AnyInteger`, `AnySignedInteger`, or `AnyNumeric`
 
 Primitive classes also support single inheritance from another primitive class. They do not support multiple inheritance. A primitive class chooses one base.
 
-The provisional `numeric` annotation is not a primitive class base. To define a primitive class over a family of number types, use a primitive group instead.
 
 ## Concrete Primitive Bases
 
@@ -49,23 +47,6 @@ UserId is u64 (
 	label is string // ❌ compiler notice
 )
 ```
-
-## Primitive Group Bases
-
-Inheriting from a primitive group creates a parametric primitive class over the concrete primitives in that group.
-
-```first
-DatabaseId is AnyUnsignedInteger (
-)
-
-id = DatabaseId(123)
-```
-
-`AnyUnsignedInteger` is not ordinary inheritance. It is a constrained provisional base. The concrete representation follows the same provisional number rules used elsewhere in the language, but it is constrained to the primitive types in the group.
-
-Primitive group bases also receive an implicit first construction parameter. The parameter is compatible with the group.
-
-Primitive class chains rooted in primitive groups cannot declare stored fields.
 
 ## Fresh Primitive Shapes
 
@@ -120,7 +101,7 @@ Vector4 is Vector3 (
 )
 ```
 
-If the chain is rooted at a concrete primitive or primitive group, descendants keep the same scalar representation family and cannot add stored fields.
+If the chain is rooted at a concrete primitive, descendants keep the same scalar representation family and cannot add stored fields.
 
 ```first
 UserId is u64 (
@@ -151,7 +132,7 @@ console.log(zValue) // f32 or null if the attestation fails
 
 Primitive classes may define constructors.
 
-For concrete primitive and primitive group bases, construction begins with the implicit first parameter. Inside the constructor, `this` refers to the current primitive class value.
+For concrete primitive bases, construction begins with the implicit first parameter. Inside the constructor, `this` refers to the current primitive class value.
 
 A constructor may call `super(value)` to replace the underlying base value for the value being constructed.
 
@@ -166,7 +147,7 @@ value = BracketedString("hi")
 console.log(value) // "[hi]"
 ```
 
-The value passed to `super(...)` must be compatible with the base primitive or primitive group. If the constructor does not call `super(...)`, the original implicit value is used.
+The value passed to `super(...)` must be compatible with the base primitive. If the constructor does not call `super(...)`, the original implicit value is used.
 
 For primitive classes based directly on `primitive`, there is no base value to replace, so `super(...)` is not available.
 

@@ -42,7 +42,7 @@ Inline type annotations stay visually linear. Standalone grouping parentheses ar
 
 Primitive types may participate in unions but not intersections. An intersection operand must be a named or composed non-primitive type.
 
-Generic aliases follow [[02-Generics]].
+Generic aliases follow [[03-Generics]].
 
 ## Callable Aliases
 

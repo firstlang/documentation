@@ -16,7 +16,7 @@ An operator overload starts with `operator`, followed by the operator token or f
 
 ## Eligible Types
 
-Operator overloads are allowed on unit declarations and on primitive classes whose root is a concrete primitive, a primitive group, or another scalar-backed primitive class.
+Operator overloads are allowed on unit declarations and on primitive classes whose root is a concrete primitive or another scalar-backed primitive class.
 
 Fresh aggregate primitive classes rooted directly in `primitive` cannot overload operators.
 

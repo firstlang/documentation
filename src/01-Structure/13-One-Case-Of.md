@@ -32,7 +32,7 @@ image(url is Url)
 
 The declaration has no implementation body. The case list defines the constructors and the possible payload shapes.
 
-Generic `one case of` declarations follow [[02-Generics]].
+Generic `one case of` declarations follow [[03-Generics]].
 
 ## Construction
 

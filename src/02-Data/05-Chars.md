@@ -43,7 +43,7 @@ Integer conversion exposes a character's scalar value. It does not encode the ch
 
 ## Numeric Groups
 
-`char` belongs to `AnyNumeric` and `AnyInteger`. This permits character-aware constraints and ranges without defining a separate `AnyChar` group.
+`char` is a primitive type. Character-aware constraints and ranges use `char` directly.
 
 Group membership does not give `char` arithmetic operators. Convert a character to an integer before performing numeric arithmetic.
 

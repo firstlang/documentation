@@ -24,6 +24,10 @@ declare import ModuleName [features Feature...] [version Semver]
 
 Imports and `declare import` forms precede all other semantic root members. Comments and anchors may precede or occur between them.
 
+## Targets
+
+The project root accepts `declare target` with a lowercase backend name and an optional configuration object. See [[02-Target-Configuration]] for scope, output paths, and backend options.
+
 ## Selections
 
 ```first
