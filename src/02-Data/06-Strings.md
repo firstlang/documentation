@@ -163,9 +163,9 @@ Optional parameters do not prevent implicit invocation because the function rema
 
 An inaccessible, ambiguous, incorrectly typed, missing, or argument-requiring `toString()` inserts no text and produces a notice. This recovery does not prevent later interpolation expressions from evaluating.
 
-Classes and custom primitive classes do not receive JavaScript's `"[object Object]"` fallback. Their values must provide a qualifying `toString()` when they are interpolated.
+Classes and custom primitives do not receive JavaScript's `"[object Object]"` fallback. Their values must provide a qualifying `toString()` when they are interpolated.
 
-Type values are handled directly by the compiler. Interpolating a class, primitive class, or selection type itself produces its declared type name rather than requiring runtime reflection.
+Type values are handled directly by the compiler. Interpolating a class, custom primitive, or selection type itself produces its declared type name rather than requiring runtime reflection.
 
 ```first
 `{Animal}` // "Animal"

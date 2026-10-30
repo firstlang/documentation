@@ -48,8 +48,8 @@ This includes:
 
 - spaces
 - classes
-- extension classes
-- primitive classes
+- extensions
+- custom primitives
 - one of, one case of, and many of declarations
 - aliases
 - generic type parameters

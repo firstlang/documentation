@@ -175,7 +175,7 @@ Cross-compilation uses the destination target. The architecture of the machine r
 
 ## The Primitive Top Type
 
-`primitive` is the top type of every built-in and user-defined primitive. A primitive class may inherit from a built-in primitive, another primitive class, or directly from `primitive` to define a fresh value representation. See [[07-Primitive-Classes]].
+`primitive` is the top type of every built-in and user-defined primitive. A custom primitive may inherit from a built-in primitive, another custom primitive, or directly from `primitive` to define a fresh value representation. See [[07-Custom-Primitives]].
 
 ```first
 writePrimitive(value is primitive) (

@@ -194,7 +194,7 @@ Composition preserves source order. Duplicate case names always produce notices,
 
 `one case of` selection types may define functions.
 
-They may also be extended with extension classes.
+They may also be extended with extensions.
 
 They do not support properties, fields, constructors, nested spaces, or ghosts.
 

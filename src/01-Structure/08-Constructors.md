@@ -20,7 +20,7 @@ Marker (
 )
 ```
 
-Both spellings make the declaration a class. Constructors may appear in reference and primitive classes. Extension classes cannot define constructors.
+Both spellings make the declaration a class. Constructors may appear in reference classes and custom primitives. Extensions cannot define constructors.
 
 ## Construction
 

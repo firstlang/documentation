@@ -12,4 +12,4 @@
 🧊 Frozen return value
 👻 Ghost function (destructor)
 🪜 Build code (proposed)
-🔌 Extension class
+🔌 Extension

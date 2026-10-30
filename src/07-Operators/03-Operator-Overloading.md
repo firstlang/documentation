@@ -1,8 +1,8 @@
 # Operator Overloading
 
-Only scalar-backed primitive classes and unit declarations can overload operators.
+Only scalar-backed custom primitives and unit declarations can overload operators.
 
-Operator overloads are defined inside the primitive class or unit body. Extension classes cannot define operator overloads.
+Operator overloads are defined inside the custom primitive or unit body. Extensions cannot define operator overloads.
 
 An operator overload starts with `operator`, followed by the operator token or fixed comparison pair, followed by the operand list.
 
@@ -16,9 +16,9 @@ An operator overload starts with `operator`, followed by the operator token or f
 
 ## Eligible Types
 
-Operator overloads are allowed on unit declarations and on primitive classes whose root is a concrete primitive or another scalar-backed primitive class.
+Operator overloads are allowed on unit declarations and on custom primitives whose root is a concrete primitive or another scalar-backed custom primitive.
 
-Fresh aggregate primitive classes rooted directly in `primitive` cannot overload operators.
+Fresh aggregate custom primitives rooted directly in `primitive` cannot overload operators.
 
 ## Operands
 

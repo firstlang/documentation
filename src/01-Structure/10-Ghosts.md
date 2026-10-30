@@ -24,9 +24,9 @@ Ghosts are First's spelling for Rust destructors. For Rust output, a ghost lower
 
 Reference classes may define ghosts.
 
-Primitive classes cannot define ghosts because primitive classes are immutable value types and do not have object identity.
+Custom primitives cannot define ghosts because custom primitives are immutable value types and do not have object identity.
 
-Extension classes cannot define ghosts because extension classes do not create values.
+Extensions cannot define ghosts because extensions do not create values.
 
 Spaces cannot define ghosts. Program-owned fields follow the backend's normal static lifetime behavior. Fields grouped in an instance-owned space are destroyed as fields of the owning class.
 
@@ -173,7 +173,7 @@ Destructor work must be synchronous. If cleanup requires async behavior, the cla
 The compiler generates a notice when:
 
 - A class declares more than one local ghost.
-- A ghost is declared in a space, primitive class, or extension class.
+- A ghost is declared in a space, custom primitive, or extension.
 - A ghost declares parameters, a return type, generic parameters, or overload variants.
 - A ghost is called directly.
 - A ghost attempts to move a stored field out of `this`.

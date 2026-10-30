@@ -145,7 +145,7 @@ The following constructs may own anchors:
 - Startup functions
 - Classes
 - Fields, when written in expanded form
-- Extension classes
+- Extensions
 - Primitive classes
 - Constructors
 - Properties

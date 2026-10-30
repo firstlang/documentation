@@ -34,7 +34,7 @@ panel = Panel("Inbox")
 item is Panel.Item = panel.Item()
 ```
 
-Extension classes, primitive classes, and selection types have their own member restrictions. Their dedicated reference pages override this ordinary class-body list.
+Extensions, custom primitives, and selection types have their own member restrictions. Their dedicated reference pages override this ordinary class-body list.
 
 Stored fields may use an anchor-only body after their complete declaration. The body owns anchors for the field and does not create a runtime scope or executable startup location.
 
