@@ -91,11 +91,11 @@ Imperative anchors may appear only inside executable bodies: functions, construc
 
 ## Semantic Islands
 
-Braces introduce a semantic island inside an anchor. A semantic island is checked by the Partial Verifier rather than by the raw anchor-prose character rules.
+Braces introduce a semantic island inside an anchor. A semantic island uses its own grammar rather than the raw anchor-prose character rules. Partial Verification is provisional and is not required for parsing islands.
 
 ```first
 - Keeps offline work usable when {Network} is unavailable.
-- Makes initialization failures from {calculateThings(...)} actionable.
+- Makes initialization failures from {calculateThings()} actionable.
 - Preserve the behavior described in {chat:2f4a9d87}.
 - Compare the current layout against {image:reference%20layout.png}.
 - Follow the accessibility guidance at {https://example.com/a11y}.
@@ -105,8 +105,10 @@ The final `?` rule for pending questions applies to the anchor as a whole, outsi
 
 There are two island forms:
 
-- A **partial-code island** contains ordinary First syntax, a name reference, member reference, type reference, call shape, or another Partial Verification fragment.
+- A **code island** contains exactly one complete particle, using the same particle grammar as a markup attribute value. This includes name and member references, calls, and indexed access. Infix expressions or multiple statements require an enclosing parenthesized scope expression, which becomes the single particle.
 - A **resource island** contains an external resource reference.
+
+For example, `{Files.readFileSync}` and `{calculateThings()}` are single particles. Write `{(a + b)}` for an infix expression; `{a + b}` and `{a b}` are not valid islands. Bare omission holes such as `...` are reserved for future Partial Verification and are not currently part of this grammar.
 
 Resource islands use this form:
 

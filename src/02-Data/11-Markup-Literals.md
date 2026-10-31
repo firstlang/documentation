@@ -1,7 +1,7 @@
 
 First supports Markup Literals, but these have some minor differences from JSX. These differences are designed to make the syntax feel more First-native. JSX/TSX feel like a different language bolted on JavaScript and TypeScript, and we aim to avoid that.
 
-First doesn't use a separate file extension to support markup literals like TypeScript. The parser ambiguity in TypeScript comes from `<Type>` casts not greater than / less than. We don't have those in First so we can actually support markup literals without much additional effort.
+First doesn't use a separate file extension for markup literals. A `<` immediately followed by a valid tag-name start begins markup. Whitespace after `<` leaves it as a comparison operator: write `a < b`, rather than `a<b`. This includes spaces, tabs, and newlines.
 
 Valid JSX looks like this:
 
@@ -39,7 +39,9 @@ There is potential for a parsing ambiguity. In tokens, we simply wrap all the va
 <a onclick=( () => 1 > 2 or 3 )> 4</a>
 ```
 
-Attribute values remain ordinary expressions, while embedded text uses `{expression}` islands, sharing the delimiters used by backtick strings and anchors. Nested expression constructs do not close the enclosing island. In text, `\{` writes a literal opening brace; a closing brace outside an island is literal text. Quoted attribute strings follow [[06-Strings]]: double quotes do not interpolate, and backticks do. The string indentation rules apply to string literals, not automatically to markup text.
+Each attribute uses `name=value`, with one particle or literal as its value: for example, an entity, member chain, function call, string, or parenthesized block. Infix expressions such as `a + b` must be enclosed: `name=(a + b)`. Parenthesized values use ordinary First statement/expression blocks.
+
+Embedded text uses `{expression}` islands, sharing the delimiters used by backtick strings and anchors. Nested expression constructs do not close the enclosing island. In text, `\{` writes a literal opening brace; a closing brace outside an island is literal text. Quoted attribute strings follow [[06-Strings]]: double quotes do not interpolate, and backticks do. The string indentation rules apply to string literals, not automatically to markup text.
 
 ```first
 render() (

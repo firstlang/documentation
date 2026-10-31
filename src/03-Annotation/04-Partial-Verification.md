@@ -24,7 +24,9 @@ Partial Verification may accept missing setup, omitted arguments, implied values
 
 Anchors may contain brace-delimited semantic islands. A semantic island is either a partial-code island checked by the Partial Verifier or a resource island preserved for an implementation that understands its scheme.
 
-Partial-code islands use single braces:
+The current parser accepts one complete particle or resource reference inside single braces. More complex code must be enclosed in a parenthesized scope expression. Partial Verification extensions, including omission holes, are future work.
+
+Examples of the intended future partial-code syntax:
 
 ```first
 {SomeClass}
