@@ -131,7 +131,8 @@ maybeOne(ready is boolean) (
 	if (ready) (
 		return 1
 	)
-) // Notice: fall-through implicitly returns null.
+// > Notice: fall-through implicitly returns null.
+)
 ```
 
 ```first
@@ -147,7 +148,8 @@ An explicit return operand that is incompatible with the destination type also p
 
 ```first
 label() is string (
-	return 42 // Notice; returns "".
+	// > Notice; returns "".
+	return 42
 )
 ```
 

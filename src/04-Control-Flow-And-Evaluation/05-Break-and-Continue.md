@@ -33,7 +33,8 @@ items each item (
 `break` never accepts an operand.
 
 ```first
-break value // ❌ Wrong: break does not carry a value
+// > ❌ Wrong: break does not carry a value
+break value
 ```
 
 When an operand is attached through manually edited or generated source, the compiler emits a prominent notice and cooks the operand without evaluating it. The valid `break` still performs its control transfer.

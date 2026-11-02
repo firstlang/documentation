@@ -32,7 +32,8 @@ Fixed-width integer arithmetic uses two's-complement wrapping. Overflow never pa
 value is u8 = 255
 value += 1
 
-console.log(value) // 0
+// > 0
+console.log(value)
 ```
 
 Compiled Rust uses explicit wrapping operations where ordinary Rust operators could panic. It does not contain development-only overflow checks.
@@ -78,11 +79,13 @@ Fixed decimals inherit the wrapping behavior of their backing integers.
 ```first
 signed is i8.2 = 1.27
 signed += 0.01
-console.log(signed) // -1.28
+// > -1.28
+console.log(signed)
 
 unsigned is u8.2 = 2.55
 unsigned += 0.01
-console.log(unsigned) // 0.00
+// > 0.00
+console.log(unsigned)
 ```
 
 The common type for fixed-decimal arithmetic uses the widest operand backing type and the greatest operand scale.
@@ -90,7 +93,8 @@ The common type for fixed-decimal arithmetic uses the widest operand backing typ
 ```first
 left is i32.4 = getLeft()
 right is i64.2 = getRight()
-result = left + right // i64.4
+// > i64.4
+result = left + right
 ```
 
 This rule does not widen the backing type merely to cover every value that could overflow while an operand is rescaled. Such overflow follows the ordinary wrapping rules.
@@ -130,9 +134,12 @@ infinity
 A decimal-point literal is a provisional fixed decimal by default. A lowercase `f` suffix explicitly creates an `f32`; `ff` creates an `f64`.
 
 ```first
-1.25	// Provisional fixed decimal
-1.25f	// f32
-1.25ff	// f64
+// > Provisional fixed decimal
+1.25
+// > f32
+1.25f
+// > f64
+1.25ff
 ```
 
 ## Division And Remainder
@@ -140,14 +147,17 @@ A decimal-point literal is a provisional fixed decimal by default. A lowercase `
 `/` is fractional division. Dividing integers with `/` does not silently perform Rust-style truncating integer division.
 
 ```first
-5 / 2 // 2.5
+// > 2.5
+5 / 2
 ```
 
 `\` is integer division and truncates toward zero.
 
 ```first
-5 \ 2 // 2
--5 \ 2 // -2
+// > 2
+5 \ 2
+// > -2
+-5 \ 2
 ```
 
 `%` computes the remainder. For signed operands, a nonzero result has the dividend's sign.

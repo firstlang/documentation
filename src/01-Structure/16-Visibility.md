@@ -16,7 +16,8 @@ Panel (
 )
 
 panel = Panel()
-console.log(panel.count()) // Valid.
+// > Valid.
+console.log(panel.count())
 // panel.In.count: notice.
 ```
 
@@ -43,7 +44,8 @@ show(item is Panel.Item) (
 )
 
 panel = Panel()
-show(panel.createItem()) // Valid.
+// > Valid.
+show(panel.createItem())
 // panel.Item(): notice outside Panel.
 ```
 

@@ -15,9 +15,12 @@ The `til` keyword creates an exclusive range. The end value never appears during
 The optional `step` keyword controls the granularity of the range. If `step` is omitted, it is assumed to be `1`.
 
 ```first
-0 to 5 step 2 // Iterates 0, 2, 4
-0 to 6 step 2 // Iterates 0, 2, 4, 6
-0 til 6 step 2 // Iterates 0, 2, 4
+// > Iterates 0, 2, 4
+0 to 5 step 2
+// > Iterates 0, 2, 4, 6
+0 to 6 step 2
+// > Iterates 0, 2, 4
+0 til 6 step 2
 ```
 
 # Type Rules
@@ -32,7 +35,8 @@ The types of `<initial-value>`, `<max-value>`, and `<step-value>` may be differe
 The range type is the narrowest type that can represent the start, end, and step values after any required conversion. Provisional numbers are pinned to that shared range type.
 
 ```first
-0 to 10 step 0.25 // Range(i64.2)
+// > Range(i64.2)
+0 to 10 step 0.25
 ```
 
 # Empty Ranges
@@ -40,10 +44,14 @@ The range type is the narrowest type that can represent the start, end, and step
 A range is empty when its step can never move from the start value toward the end value, or when the start and end values leave no values to iterate.
 
 ```first
-0 to 0 // Empty range
-0 til 0 // Empty range
-0 to 10 step -1 // Empty range
-10 to 0 step 1 // Empty range
+// > Empty range
+0 to 0
+// > Empty range
+0 til 0
+// > Empty range
+0 to 10 step -1
+// > Empty range
+10 to 0 step 1
 ```
 
 If an empty range can be determined statically, the compiler emits a notice. If it can only be discovered at runtime, the range is simply empty.
@@ -53,7 +61,8 @@ lo = getLowValue()
 hi = getHighValue()
 step = getStep()
 
-range = lo to hi step step // May be empty at runtime
+// > May be empty at runtime
+range = lo to hi step step
 ```
 
 `step 0` is not allowed. If the step value is statically known to be `0`, the compiler emits a notice. If a runtime value evaluates to `0`, creating the range is a runtime error.
@@ -63,9 +72,12 @@ range = lo to hi step step // May be empty at runtime
 Ranges may move forward or backward. A backward range must have a negative step.
 
 ```first
-5 to 0 step -2 // Iterates 5, 3, 1
-6 to 0 step -2 // Iterates 6, 4, 2, 0
-6 til 0 step -2 // Iterates 6, 4, 2
+// > Iterates 5, 3, 1
+5 to 0 step -2
+// > Iterates 6, 4, 2, 0
+6 to 0 step -2
+// > Iterates 6, 4, 2
+6 til 0 step -2
 ```
 
 Once a range is created, its start, end, step, and inclusivity cannot be changed.
@@ -142,7 +154,8 @@ Loose equality with `==` compares the iterated sequence. Compatible numeric type
 range1 = 0 to 6 step 2
 range2 = 0 til 7 step 2
 
-console.log(range1 == range2) // true
+// > true
+console.log(range1 == range2)
 ```
 
 Strict equality with `===` compares the exact range shape, including `start`, `end`, `step`, `inclusive`, and type.
@@ -151,7 +164,8 @@ Strict equality with `===` compares the exact range shape, including `start`, `e
 range1 = 0 to 6 step 2
 range2 = 0 til 7 step 2
 
-console.log(range1 === range2) // false
+// > false
+console.log(range1 === range2)
 ```
 
 # Binary Operations
@@ -161,8 +175,10 @@ Ranges do not support scalar binary operations.
 ```first
 range = 0 to 5
 
-range + 1 // Notice
-range * 10 // Notice
+// > Notice
+range + 1
+// > Notice
+range * 10
 ```
 
 When a transformed range is needed, create a new range explicitly from the original range values.

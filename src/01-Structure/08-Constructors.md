@@ -85,7 +85,8 @@ Panel (
 	)
 	value is int = 7
 	constructor() (
-		console.log(In.seen) // 0
+		// > 0
+		console.log(In.seen)
 	)
 )
 ```

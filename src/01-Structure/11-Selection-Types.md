@@ -85,14 +85,17 @@ Reserve all explicit numeric values before assigning inferred entries, regardles
 
 ```first
 Base is one of (
-	a       // 3
-	b       // 4
+	// > 3
+	a
+	// > 4
+	b
 	c = 2
 )
 
 Extended is Base or one of (
 	d = 10
-	e       // 13
+	// > 13
+	e
 )
 // Extended: a = 11, b = 12, c = 2, d = 10, e = 13.
 // Base remains a = 3, b = 4, c = 2.
@@ -134,10 +137,13 @@ takeSmall(value is Small) ()
 takeLarge(value is Large) ()
 
 check(small is Small, large is Large) (
-	takeLarge(small) // Accepted.
-	takeSmall(large) // Notice: could be 64.
+	// > Accepted.
+	takeLarge(small)
+	// > Notice: could be 64.
+	takeSmall(large)
 	if (large is Small) (
-		takeSmall(large) // Accepted.
+		// > Accepted.
+		takeSmall(large)
 	)
 )
 ```

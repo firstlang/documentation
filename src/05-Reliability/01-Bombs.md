@@ -29,7 +29,8 @@ You don't need to provide a bomb value. You can just throw without a value and i
 ```first
 start() (
 	if (1 + 1 === 3) (
-		throw // Bomb message is "Failure in start(), at SourceFile.first:123"
+		// > Bomb message is "Failure in start(), at SourceFile.first:123"
+		throw
 	)
 	
 	return 0
@@ -40,7 +41,8 @@ When you call a function that could possibly return a bomb, you can't touch the 
 
 ```first
 start() (
-	🥚 foo = getFooOrBomb() 💣 // foo is Foo | bomb
+	// > foo is Foo | bomb
+	🥚 foo = getFooOrBomb() 💣
 	if (foo is not bomb) (
 		console.log(foo.bar)
 	)
@@ -54,34 +56,46 @@ Alternatively, you can use `throw` as an operator and suffix it after the bomb-r
 ```first
 // start() is bombable now, because of the throw operator.
 start() 💣 (
-	🥚 foo = getFooOrBomb() 💣 throw // foo is just Foo
-	console.log(foo.bar) // Works
+	// > foo is just Foo
+	🥚 foo = getFooOrBomb() 💣 throw
+	// > Works
+	console.log(foo.bar)
 )
 
 iterate() (
 	// v1 is of type (Foo | bomb)[]
 	🥚 v1 = 1 to 10 each i (
-		// throw is pointless here, you're already yielding Foo | bomb
-		// This generates a compliation notice.
+// > throw is pointless here, you're already yielding Foo | bomb
+	
+// > This generates a compliation notice.
+	
 		yield getFooOrBomb() 💣 throw
 	)
 	
 	// v2 is of type (Foo | bomb)[]
 	🥚 v2 = 1 to 10 each i (
-		// You could do this, which is idiomatic
+// > You could do this, which is idiomatic
+	
 		🥚 fooOrBomb = getFooOrBomb() 💣 throw
 		
-		// You could also do this which is a lot less idiomatic,
-		// but we might have to also support this:
+// > You could also do this which is a lot less idiomatic,
+	
+// > but we might have to also support this:
+	
 		🥚 fooOrBomb = getFooOrBomb() 💣
 		
-		// Perhaps the bomb glyph keeps following bombed identifiers. 
-		// This will discourage this is gross pattern below, which
-		// technically would need to work. 
+// > Perhaps the bomb glyph keeps following bombed identifiers. 
+	
+// > This will discourage this is gross pattern below, which
+	
+// > technically would need to work. 
+	
 		fooOrBomb 💣 throw
 		
-		// This would actually be executed below fooOrBomb throw;
-		// in the case when fooOrBomb is not a bomb
+// > This would actually be executed below fooOrBomb throw;
+	
+// > in the case when fooOrBomb is not a bomb
+	
 		yield fooOrBomb
 	)
 )
@@ -107,15 +121,18 @@ Throw as expression is a convenient way to get an early quit mid-expression if s
 start() (
 	🥚 str = getStringMaybe() 💣
 	if (str is bomb) (
-		console.log("A bomb happened") // Logs "Bomb"
+		// > Logs "Bomb"
+		console.log("A bomb happened")
 	)
 	else (
-		console.log("[" + str + "]") // Works because we know its a string
+		// > Works because we know its a string
+		console.log("[" + str + "]")
 	)
 	
 	🥚 bar = getStringMaybe() 💣
 	if (bar is bomb) (
-		console.log(bar) // Logs the auto-generated bomb message
+		// > Logs the auto-generated bomb message
+		console.log(bar)
 	)
 )
 
@@ -162,7 +179,8 @@ The catch operator essentially does "expression fall-through, if and only if the
 ```first
 handle() (
 	🥚 str = getStringMaybe() 💣 catch "Bomb"
-	return str + "!" // Returns Hello! or Bomb!
+	// > Returns Hello! or Bomb!
+	return str + "!"
 )
 
 getStringMaybe(): string 💣 (
@@ -176,12 +194,14 @@ Below is a more complex example using `catch` with `??`, to show how the fall th
 
 nullishFirst() (
 	🥚 str = getStringNullBomb() 💣 ?? "Null" catch "Bomb"
-	return str + "!" // Returns Hello! or Null! or Bomb!
+	// > Returns Hello! or Null! or Bomb!
+	return str + "!"
 )
 
 catchFirst() (
 	🥚 str = getStringNullBomb() 💣 catch "Bomb" ?? "Null"
-	return str + "!" // Returns Hello! or Bomb! or Null!
+	// > Returns Hello! or Bomb! or Null!
+	return str + "!"
 )
 
 getStringNullBomb() is string 💣 (

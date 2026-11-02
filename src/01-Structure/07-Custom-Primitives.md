@@ -44,7 +44,8 @@ Custom primitive chains rooted in a concrete primitive cannot declare stored fie
 
 ```first
 UserId is u64 (
-	label is string // ❌ compiler notice
+	// > ❌ compiler notice
+	label is string
 )
 ```
 
@@ -118,14 +119,16 @@ v is Vector2 = Vector3(1, 2, 3)
 
 v.x
 v.y
-v.z // ❌ compiler notice
+// > ❌ compiler notice
+v.z
 ```
 
 The descendant view can be restored with an attestation. If the attestation fails, the access path short-circuits.
 
 ```first
 zValue = (v is Vector3).z
-console.log(zValue) // f32 or null if the attestation fails
+// > f32 or null if the attestation fails
+console.log(zValue)
 ```
 
 ## Constructors
@@ -144,7 +147,8 @@ BracketedString is string (
 )
 
 value = BracketedString("hi")
-console.log(value) // "[hi]"
+// > "[hi]"
+console.log(value)
 ```
 
 The value passed to `super(...)` must be compatible with the base primitive. If the constructor does not call `super(...)`, the original implicit value is used.
@@ -227,8 +231,10 @@ OrderId is u64 (
 user = UserId(10)
 order = OrderId(10)
 
-user === order // false
-user == order // true
+// > false
+user === order
+// > true
+user == order
 ```
 
 For numeric custom primitives with different concrete numeric representations, loose equality follows the normal numeric conversion rules.

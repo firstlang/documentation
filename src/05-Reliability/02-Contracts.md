@@ -53,7 +53,8 @@ Postconditions follow normal source order. A postcondition cannot reference `ret
 
 ```first
 normalize(value is string) (
-	ensure return.length > 0 // Notice: no return value exists yet.
+	// > Notice: no return value exists yet.
+	ensure return.length > 0
 	
 	result = value.trim()
 	return result

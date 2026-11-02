@@ -10,9 +10,11 @@ Width is one of (16, 32)
 useWidth(width is Width) ()
 
 run(input is int) (
-	useWidth(input) // Notice: membership is not established.
+	// > Notice: membership is not established.
+	useWidth(input)
 	if (input is Width) (
-		useWidth(input) // Accepted: 16 or 32.
+		// > Accepted: 16 or 32.
+		useWidth(input)
 	)
 )
 ```
@@ -25,8 +27,10 @@ Reply is one of ({ code = 1 })
 run() (
 	exact = { code = 1 }
 	extra = { code = 1, other = true }
-	a = exact is Reply // true
-	b = extra is Reply // false
+	// > true
+	a = exact is Reply
+	// > false
+	b = extra is Reply
 )
 ```
 

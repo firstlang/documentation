@@ -172,10 +172,12 @@ App (
 
 panel = App.Panel()
 panel.Item.increment()
-console.log(panel.Item.count) // 1
+// > 1
+console.log(panel.Item.count)
 
 item = panel.Item("Subject")
-console.log(item.name) // "Subject"
+// > "Subject"
+console.log(item.name)
 // item.count produces a notice: count belongs to panel, not item.
 ```
 
@@ -200,7 +202,8 @@ Counter (
 a = Counter()
 b = Counter()
 a.bump()
-console.log(b.read()) // 0
+// > 0
+console.log(b.read())
 ```
 
 The path is part of each grouped member's address. `a.In.count` does not create an alias named `a.count`. A space adds no allocation, identity, receiver, or runtime value of its own, so a space cannot be assigned, passed, returned, compared, or replaced. Compiler-side code may inspect its declarations through the compiler's reflection facilities.

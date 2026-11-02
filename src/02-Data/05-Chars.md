@@ -17,8 +17,10 @@ First has one character type. It does not provide separate `char8`, `char16`, or
 A `char` is one Unicode scalar value, not necessarily one user-perceived character. A displayed character may contain multiple scalars, such as a base letter followed by a combining mark.
 
 ```first
-'é'	// One scalar: U+00E9
-'é'	// ❌ Wrong: two scalars in one character literal
+// > One scalar: U+00E9
+'é'
+// > ❌ Wrong: two scalars in one character literal
+'é'
 ```
 
 Character literals contain exactly one scalar value. The editor reports a notice when a character literal contains no scalar values or more than one scalar value.
@@ -34,7 +36,8 @@ Ordinary-string indexing and iteration produce `char` values. Encoding, byte-str
 Converting a `char` to `u32` returns its Unicode scalar value and is lossless.
 
 ```first
-codePoint is u32 = 'A' // 65
+// > 65
+codePoint is u32 = 'A'
 ```
 
 Conversions to narrower integers use the ordinary numeric conversion rules and receive a saw when they may lose information.
@@ -48,7 +51,8 @@ Integer conversion exposes a character's scalar value. It does not encode the ch
 Group membership does not give `char` arithmetic operators. Convert a character to an integer before performing numeric arithmetic.
 
 ```first
-'A' + 1 // ❌ Wrong: char does not support arithmetic
+// > ❌ Wrong: char does not support arithmetic
+'A' + 1
 
 codePoint is u32 = 'A'
 nextCodePoint = codePoint + 1

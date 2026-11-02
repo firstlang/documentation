@@ -57,7 +57,8 @@ Fields may use an anchor-only body after the complete declaration. That body may
 ```first
 Counter (
 	count is int = 0 (
-		// Persistence
+// > Persistence
+	
 		- Starts at zero for newly created counters.
 	)
 )
@@ -154,9 +155,12 @@ Child is Base (
 )
 
 child = Child()
-console.log(child.In.a) // 1
-console.log(child.In.b) // 2
-console.log(child.In.label()) // "base child"
+// > 1
+console.log(child.In.a)
+// > 2
+console.log(child.In.b)
+// > "base child"
+console.log(child.In.label())
 ```
 
 Inside an instance-owned space, `super` still denotes the owning class's inherited view. The complete group path is required; it does not gain a group-relative meaning.
@@ -232,9 +236,12 @@ Combined is Left, Right (
 
 combined = Combined()
 item = combined.Item()
-console.log(item.left) // 1
-console.log(item.right) // 2
-console.log(item.label()) // "extra"
+// > 1
+console.log(item.left)
+// > 2
+console.log(item.right)
+// > "extra"
+console.log(item.label())
 ```
 
 Declaration-qualified nested class paths such as `Left.Item` are valid in type positions. They name a type and do not construct it. Runtime construction still requires an instance of the class that owns the nested declaration.

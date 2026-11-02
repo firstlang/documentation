@@ -66,7 +66,8 @@ label(ready is boolean) (
 	if (ready) (
 		return "ready"
 	)
-) // Notice: the other path implicitly returns null.
+// > Notice: the other path implicitly returns null.
+)
 ```
 
 The declaration does not change the inferred `string or null` result or the runtime `null` fallback. It does not report an explicit `return null`, an explicitly typed function's zero fallback, or constructor fall-through. The nearest enclosing declaration applies. Without the declaration, implicit null returns produce no notice.

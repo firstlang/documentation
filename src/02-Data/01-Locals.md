@@ -30,14 +30,16 @@ Another declaration in the same scope causes a notice to appear
 
 ```first
 🥚 a = 1
-a = 12 // Notice: you can't make a = 12 because it was already set to 1.
+// > Notice: you can't make a = 12 because it was already set to 1.
+a = 12
 ```
 
 Mutable variables need to be annotated as "var" explicitly. This is true both in argument lists, as well as in control flow.
 
 ```first
 🐝 a is var = 1
-a = 12 // No notices
+// > No notices
+a = 12
 ```
 
 If you try to re-assign an identifier in a scope, it just makes a new one:
@@ -112,7 +114,8 @@ Baz (
 )
 
 baz = Baz(1, 2)
-console.log(baz.a) // Logs 1.
+// > Logs 1.
+console.log(baz.a)
 // baz.In.b: notice.
 ```
 
@@ -127,14 +130,20 @@ foo() (
 	
 	if (Math.random() > 0.5) (
 		
-		// This gets you a new variable, because
-		// you can shadow when you're immutable.
+// > This gets you a new variable, because
+	
+// > you can shadow when you're immutable.
+	
 		🥚 x = 20
 		
-		// This still uses the same non-shadowed variable.
-		// The editor will need to draw this out so that authors
-		// can follow that it's the same mutable variable as before.
-		// I'm leaning towards this design.
+// > This still uses the same non-shadowed variable.
+	
+// > The editor will need to draw this out so that authors
+	
+// > can follow that it's the same mutable variable as before.
+	
+// > I'm leaning towards this design.
+	
 		y = 10
 	)
 )
@@ -150,7 +159,8 @@ Unlike Rust, shadowing a variable within the same scope is prohibited. This lead
 foo() (
 	🥚 x = 10
 	console.log(x)
-	x = 20 // ❌ Compiler notice
+	// > ❌ Compiler notice
+	x = 20
 )
 
 ```
@@ -168,15 +178,21 @@ foo()
 	
 	fn = () =>
 	{
-		// This makes a new value, it doesn't access the parent one.
-		// We might need a frozen egg instead of a normal one
-		// for the image, provided we're willing to break from the
-		// unicode standard emoji set.
+// > This makes a new value, it doesn't access the parent one.
+	
+// > We might need a frozen egg instead of a normal one
+	
+// > for the image, provided we're willing to break from the
+	
+// > unicode standard emoji set.
+	
 		🥚 y = 30
-		console.log(y); // 30
+		// > 30
+		console.log(y);
 	}
 	
-	console.log(y); // 20
+	// > 20
+	console.log(y);
 	fn();
 }
 

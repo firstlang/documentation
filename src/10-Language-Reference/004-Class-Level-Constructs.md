@@ -45,7 +45,8 @@ Panel (
 	identifier
 	mode = DefaultMode
 	title is string (
-		// Navigation
+// > Navigation
+	
 		- Names the panel for visible navigation.
 	)
 )

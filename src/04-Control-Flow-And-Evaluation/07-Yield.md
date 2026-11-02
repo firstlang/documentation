@@ -10,7 +10,8 @@ Standalone scopes, conditionals, `matches` expressions, and other non-iterative 
 Every `yield` requires an explicit operand.
 
 ```first
-yield // ❌ Wrong: a yielded value is required.
+// > ❌ Wrong: a yielded value is required.
+yield
 ```
 
 Typist may expand an incomplete `yield` by inserting `null`, but the resulting source is explicitly `yield null`.

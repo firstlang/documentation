@@ -151,7 +151,8 @@ An `editable` specialization is invariant wherever editing could replace a value
 
 ```first
 editableDogs is editable Dog[]
-editableAnimals is editable Animal[] = editableDogs // Invalid.
+// > Invalid.
+editableAnimals is editable Animal[] = editableDogs
 ```
 
 An immutable or narrower specialization may widen into a new editable specialization through an independent copy or conversion.

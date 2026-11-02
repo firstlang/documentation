@@ -95,7 +95,8 @@ When an explicitly typed function expression falls through, it returns the decla
 
 ```first
 zeroFn = () is int => ()
-zeroFn() // 0
+// > 0
+zeroFn()
 ```
 
 `declare noImplicitNullReturns` reports unannotated function expressions whose fall-through implicitly returns `null`. It does not change inference or runtime behavior.
@@ -160,7 +161,8 @@ Function expressions are ordinary values. They may be stored, passed, returned, 
 ```first
 makeAdderFn = (offset is int) => (value is int) => value + offset
 addTenFn = makeAdderFn(10)
-addTenFn(2) // 12
+// > 12
+addTenFn(2)
 ```
 
 Each evaluation of an arrow creates a distinct callable identity. Copying a function value preserves that identity. Callable equality uses identity; ordering is unsupported.
@@ -172,8 +174,10 @@ firstFn = makeFn()
 secondFn = makeFn()
 copyFn = firstFn
 
-firstFn == copyFn // true
-firstFn == secondFn // false
+// > true
+firstFn == copyFn
+// > false
+firstFn == secondFn
 ```
 
 Ordinary named functions may also be selected as callable values. Selecting an instance function binds the receiver.

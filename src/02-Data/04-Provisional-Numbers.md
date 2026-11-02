@@ -19,14 +19,16 @@ An unsuffixed whole-number literal begins with the narrowest integer type that c
 
 ```first
 count = 0
-console.log(getPrimitiveTypeName(count)) // u8
+// > u8
+console.log(getPrimitiveTypeName(count))
 ```
 
 An unsuffixed literal with a decimal point begins as the narrowest fixed decimal that can represent the written value.
 
 ```first
 amount = 1.25
-console.log(getPrimitiveTypeName(amount)) // u8.2
+// > u8.2
+console.log(getPrimitiveTypeName(amount))
 ```
 
 A lowercase `f` suffix pins a literal to `f32`. A lowercase `ff` suffix pins it to `f64`.
@@ -44,7 +46,8 @@ The compiler revises a provisional number when later operations require another 
 x is var numeric = 0
 x += getInt16()
 
-console.log(getPrimitiveTypeName(x)) // i16
+// > i16
+console.log(getPrimitiveTypeName(x))
 ```
 
 ```first
@@ -52,7 +55,8 @@ x is var numeric = 0
 x += getInt16()
 x += getFloat32()
 
-console.log(getPrimitiveTypeName(x)) // f32
+// > f32
+console.log(getPrimitiveTypeName(x))
 ```
 
 This is a compile-time process. The runtime value does not carry a tag saying that it is provisional, and its primitive type does not change while the program executes.
@@ -87,7 +91,8 @@ The saw is an editor decoration. It communicates that the generated program cont
 source is u16 = 257
 target is u8 = 🪚source
 
-console.log(target) // 1
+// > 1
+console.log(target)
 ```
 
 First still produces compiled output when an automatic conversion violates `declare noAutomaticNumberConversion`. The compiler reports a notice and uses the ordinary conversion as its recovery behavior.
@@ -100,7 +105,8 @@ Converting a fixed decimal to a smaller scale truncates toward zero by default.
 source is i32.4 = 1.2399
 target is i32.2 = 🪚source
 
-console.log(target) // 1.23
+// > 1.23
+console.log(target)
 ```
 
 Potentially discarding fractional digits receives a saw. Rounding and round-and-clamp behavior are requested through explicit conversion operations rather than a scoped rounding declaration.

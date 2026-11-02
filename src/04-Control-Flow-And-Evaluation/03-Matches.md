@@ -48,7 +48,8 @@ day matches (
 limit = calculateLimit()
 
 value matches (
-	limit handleLimit() // ❌ Wrong: runtime locals are not patterns
+	// > ❌ Wrong: runtime locals are not patterns
+	limit handleLimit()
 )
 ```
 
@@ -264,7 +265,8 @@ An ordinary identifier does not create a binding. Under the static pattern rules
 
 ```first
 message matches (
-	text(value) showText(value) // ❌ Wrong: `value` is not a constant or new binding
+	// > ❌ Wrong: `value` is not a constant or new binding
+	text(value) showText(value)
 )
 ```
 

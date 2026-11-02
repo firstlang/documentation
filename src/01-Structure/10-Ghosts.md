@@ -63,7 +63,8 @@ For owned values, destruction happens when the value's lifetime ends. For refere
 Ghosts are not called directly.
 
 ```first
-user.ghost() // notice
+// > notice
+user.ghost()
 ```
 
 Ghost execution is deterministic for ordinary owned values and follows the same lifetime points used by Rust. For reference-counted values, the last-reference point determines when the ghost runs.
@@ -149,7 +150,8 @@ The compiler is responsible for running inherited ghosts and field destruction i
 Bunny is Animal (
 	👻 ghost (
 		cleanUpBunny()
-		// no super.ghost()
+// > no super.ghost()
+	
 	)
 )
 ```

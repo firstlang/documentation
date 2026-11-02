@@ -257,13 +257,15 @@ They cannot shadow mutable locals and cannot be reassigned.
 ```first
 🐝 item is var = fallback
 
-items each item ( // ❌ Wrong: mutable locals cannot be shadowed
+// > ❌ Wrong: mutable locals cannot be shadowed
+items each item (
 )
 ```
 
 ```first
 items each item (
-	item = replacement // ❌ Wrong
+	// > ❌ Wrong
+	item = replacement
 )
 ```
 
@@ -303,7 +305,8 @@ Items (
 	constructor
 	
 	iterator() is ItemIterator (
-		// Return a new iteration context.
+// > Return a new iteration context.
+	
 	)
 )
 
@@ -311,7 +314,8 @@ ItemIterator (
 	constructor
 	
 	next() is ItemIterationResult (
-		// Return value(...) or done().
+// > Return value(...) or done().
+	
 	)
 )
 ```
@@ -346,7 +350,8 @@ A production build may make similar eliminations for custom iterators when whole
 A value with only `next()` is an iterator, but it cannot be used directly with `each`.
 
 ```first
-iterator each value ( // ❌ Wrong: iterator() is missing
+// > ❌ Wrong: iterator() is missing
+iterator each value (
 )
 ```
 
@@ -365,7 +370,8 @@ ItemIterator (
 	)
 	
 	next() is ItemIterationResult (
-		// Advance this iteration context.
+// > Advance this iteration context.
+	
 	)
 )
 ```
@@ -420,7 +426,8 @@ At runtime, the source's active union member selects the corresponding `iterator
 ```first
 items is Item[] or null
 
-items each item ( // ❌ Wrong
+// > ❌ Wrong
+items each item (
 )
 ```
 

@@ -4,7 +4,8 @@ Comments are free-form text for human readers. They begin with `//` and continue
 
 ```first
 // Explain why this value is fixed.
-retryLimit = 3 // Temporary limit while the service is in preview.
+// > Temporary limit while the service is in preview.
+retryLimit = 3
 ```
 
 A comment may occupy its own line or follow code on the same line. The compiler ignores the comment text.

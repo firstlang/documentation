@@ -99,7 +99,8 @@ Validation, normalization, and conversion belong in ordinary functions or explic
 ```first
 requirePositiveMeters(value is m) is m (
 	if (value < m(0)) (
-		// library-defined notice or bomb behavior
+// > library-defined notice or bomb behavior
+	
 	)
 	return value
 )
@@ -177,7 +178,8 @@ Distinct units are unrelated unless a function, conversion, or operator overload
 m is unit
 surveyM is unit
 
-distance = 10m + 5surveyM // compiler notice unless an overload defines this operation
+// > compiler notice unless an overload defines this operation
+distance = 10m + 5surveyM
 ```
 
 Libraries may define conversions or cross-unit operations with unit functions and operator overloads.
@@ -211,7 +213,8 @@ Same-unit `+` and `-` are valid by default and return the same unit. Same-unit `
 
 ```first
 sum = 10m + 5m
-area = 10m * 5m // compiler notice unless an overload defines the result
+// > compiler notice unless an overload defines the result
+area = 10m * 5m
 ```
 
 If a library wants `m * m` to return an area unit, or `m / s` to return a speed unit, it defines those operator overloads.
@@ -237,12 +240,15 @@ m is unit (
 Loose equality between a unit value and a bare numeric value compares the underlying numeric values unless a unit overloads `== !=`.
 
 ```first
-10m == 10 // true
+// > true
+10m == 10
 ```
 
 Strict equality is checked statically before lowering and requires the same unit tag and compatible underlying numeric value.
 
 ```first
-10m === 10 // false
-10m === 10m // true
+// > false
+10m === 10
+// > true
+10m === 10m
 ```

@@ -18,8 +18,10 @@ Reserve explicit numeric values first, then number inferred entries above the hi
 
 ```first
 Example is one of (
-	a       // 3
-	b       // 4
+	// > 3
+	a
+	// > 4
+	b
 	c = 2
 )
 ```
@@ -51,7 +53,8 @@ Computation is excluded even if statically evaluable:
 
 ```first
 Bad is one of (
-	8 + 8 // Notice.
+	// > Notice.
+	8 + 8
 	32
 )
 ```

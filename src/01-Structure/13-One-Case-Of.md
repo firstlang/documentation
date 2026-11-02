@@ -162,7 +162,8 @@ Case names must be unique within a `one case of` declaration.
 ```first
 Message is one case of (
 	text(value is string)
-	text(value is string) // notice
+	// > notice
+	text(value is string)
 )
 ```
 
