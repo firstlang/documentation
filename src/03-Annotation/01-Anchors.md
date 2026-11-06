@@ -74,7 +74,7 @@ A **declarative anchor** states a fact, responsibility, invariant-like intent, c
 - Payment failures remain explainable without exposing processor internals.
 ```
 
-An **imperative anchor** gives an instruction at an executable source position. It may be replaced by generated implementation at that position.
+An **imperative anchor** gives an instruction at an executable source position. Implementation may be inserted after it while retaining the anchor as the statement of intent.
 
 ```first
 retryPayment() (
@@ -122,17 +122,49 @@ The `payload` is an opaque UTF-8 payload interpreted by the implementation that 
 
 Unknown schemes remain valid resource islands. Editors may render supported schemes inline, as links, as previews, or as context attachments. The compiler must not require fetching or executing an external resource to parse the program.
 
-## Partitions
+## Imperative Implementation Contexts
 
-Partition references are separate from anchor identity. Anchors no longer expose stable numeric identities or `#123` addresses in source.
+An imperative anchor introduces an implementation context for the statements that follow it in the same executable body. The context ends at the next imperative anchor in that body or at the end of the body. A nested statement body remains part of its enclosing statement; an anchor inside that nested body introduces a context within that body.
 
-An anchor can still be the source position for a partition. The enclosing context determines what kind of partition is allowed:
+```first
+download() (
+	- Download the data.
+	size = getSize()
+	data = getData(size)
 
-- Imperative anchors in executable bodies may attach body partitions. The partition contributes implementation at the anchor's source position.
-- Declarative anchors in structural contexts may attach structural or member partitions. The partition contributes lower-stratum declarations associated with the enclosing declaration.
-- Uncertain anchors may attach partitions only when their enclosing context determines a valid partition kind. For example, an uncertain anchor inside a function may attach a body partition, but an uncertain anchor directly under a space cannot attach an executable body partition.
+	- Organize the results alphabetically.
+	sortAlphabetically(data)
+)
+```
 
-These rules keep partition implementation tied to the anchor that describes its responsibility without making anchor identity syntax part of the language.
+The context introduces no lexical scope, runtime scope, or control-flow boundary. `data` remains available to the following statements under ordinary scope rules. No extra delimiters or indentation rules are required. Declarative anchors, pending questions, and comments do not terminate an imperative context; declarative guardrails retain their ordinary enclosing-declaration meaning.
+
+A sketch may contain only the instructions. Filling it in inserts ordinary statements between the anchors:
+
+```first
+download() (
+	- Download the data.
+	- Organize the results alphabetically.
+)
+```
+
+A verification agent checks whether the statements in each context contribute to the instruction and whether the implementation satisfies it. A statement unrelated to that responsibility is a semantic smell, even when the code compiles:
+
+```first
+download() (
+	- Download the data.
+	size = getSize()
+	data = getData(size)
+	sendUnrelatedReminder() // The verification agent flags unrelated work here.
+
+	- Organize the results alphabetically.
+	sortAlphabetically(data)
+)
+```
+
+Semantic disagreement is reported through agent evaluation, not a compiler notice for otherwise valid statements. The agent may also identify missing implementation or an instruction that is only partly satisfied. An empty context remains valid sketch material and must be distinguishable from a completed implementation.
+
+These local contexts are separate from the named criticality partitions described in [[18-Partitions]]. They do not create partition paths or participate in declaration merging. Anchors may describe responsibilities and guardrails relevant to deeper partition contributions without becoming partitions themselves.
 
 ## Ownership
 
@@ -187,4 +219,4 @@ Tooling may retain history, provenance, authorship, conversation records, evalua
 - Invariants established with `declare` alter compiler behavior deterministically.
 - Contracts, including `ensure` postconditions, and tests are deterministic language mechanisms.
 - Partial Verification checks semantic islands used by anchors and examples.
-- Partitions may attach implementation or lower-stratum declarations to eligible anchors.
+- Criticality partitions organize declaration contributions by level of detail. Imperative implementation contexts organize work within an executable body.
