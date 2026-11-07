@@ -81,7 +81,7 @@ Selection bodies do not accept `...` spreads of selections, objects, or arrays. 
 
 ## Numbering
 
-Reserve all explicit numeric values before assigning inferred entries, regardless of their positions. For `one of`, start above the highest explicit numeric value, then increment by one in expanded declaration order. Inferred values are integers; if explicit fractional values coexist with inferred entries, start at the smallest integer strictly above the highest explicit value. Non-numeric explicit values consume no numeric positions. With no explicit numeric values, begin at 1.
+Reserve all explicit numeric values before assigning inferred entries, regardless of their positions. For `one of`, start above the highest explicit numeric value, then increment by one in declaration order. Inferred values are assigned locally within each declaration before composition; composing a selection preserves the values already assigned by its sources. Inferred values are integers; if explicit fractional values coexist with inferred entries, start at the smallest integer strictly above the highest explicit value. Non-numeric explicit values consume no numeric positions. With no explicit numeric values, begin at 1.
 
 ```first
 Base is one of (
@@ -101,7 +101,7 @@ Extended is Base or one of (
 // Base remains a = 3, b = 4, c = 2.
 ```
 
-For `many of`, begin at the power of two above the highest bit occupied by explicit values, then double for each inferred entry. With no occupied explicit bits, begin at 1. The special none entry is zero and consumes no inferred position.
+For `many of`, begin at the power of two above the highest bit occupied by explicit values in that declaration, then double for each inferred entry. With no occupied explicit bits, begin at 1. The special none entry is zero and consumes no inferred position. Composition does not renumber imported flags; inferred entries in an inline body are numbered only against that body's explicit values.
 
 Numeric literals follow [[04-Provisional-Numbers]], not an unconditional platform-int default. Report overflow or unrepresentable values rather than wrapping.
 
