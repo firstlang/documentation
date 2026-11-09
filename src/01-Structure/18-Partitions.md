@@ -85,65 +85,66 @@ The calls illustrate name visibility, not a recommended execution pattern.
 
 Sibling communication goes through declarations, contracts, or signals in the shared parent. There is no partition friendship mechanism. A parent-level function can receive its implementation from a lower partition without making the lower partition's private implementation names visible to the parent.
 
-## Function Implementations And Advice
+## Function Contributions And Execution
 
-A merged function may have at most one bodyless architectural declaration and at most one value-producing implementation body. When an architectural declaration exists, the implementation must declare exactly the same return type.
+A merged function may have at most one bodyless architectural declaration and multiple executable contributions in different partitions. Contributions form one function body, not separate function calls. The architectural signature contributes no executable statements.
 
-Additional function contributions must omit a return type and produce no value. These void bodies act as advice: they execute before the implementation body. They belong to different partitions under the same function identity.
+The compiler orders executable contributions by depth-first traversal of the partition tree. Sibling branches follow declaration order. Each contribution may supply a result, let a bomb escape, or complete without supplying a value (`void`). Completing a contribution without a value continues execution into the next contribution; it does not return from the merged function.
 
 ```first
 ServiceManager (
-	getString() returns string
+	getString(early is boolean) returns string
 )
 
 ServiceManager (
 	declare partition logic
-	getString() (
-		console.log("Preparing")
+	getString(early is boolean) returns string (
+		if (early) (
+			return "Early"
+		)
 	)
 )
 
 ServiceManager (
 	declare partition logic internals
-	getString() returns string (
+	getString(early is boolean) returns string (
 		return "Ready"
 	)
 )
 ```
 
-Calling `ServiceManager.getString()` prints `Preparing`, then returns `Ready`. These contributions form one callable function. The architectural signature contributes no executable statements.
+When `early` is true, the first contribution returns `"Early"` and the second contribution does not execute. Otherwise, the first contribution falls through and the second returns `"Ready"`.
 
-The compiler constructs the partition tree and orders advice bodies by depth-first traversal. Sibling branches follow declaration order. All advice executes before the value-producing implementation, regardless of that implementation's position in the tree. Body merging does not rebind names: each contribution resolves references using its own partition visibility.
+Several contributions may produce values. The first executed return targeting the function completes the merged call and skips the remaining contributions. A bomb escaping the function likewise completes the call and skips the remaining contributions.
 
-Declaration order across files comes from the project's source-assembly order. The exact file-ordering mechanism remains to be specified; partition semantics do not introduce a separate file-ordering policy.
+A function-targeting bare `return` also completes the entire call, following the ordinary typed zero-value rule and return-site notice. It does not merely end the current contribution. A return captured by a nested expression retains its ordinary destination; see [[../04-Control-Flow-And-Evaluation/06-Return]].
 
-## Type Refinement
+To skip a section without completing the call, place it in an explicit standalone scope and use `break` to exit that scope. Neither a contribution body nor the merged function body is a break target. Existing break and return target rules remain unchanged.
 
-A deeper contribution may preserve or narrow the type exposed by an ancestor; it may not widen that contract. Function implementation return types have the stricter rule above: the declared implementation return type must match the architectural return type exactly. Returning a particular member of a union does not require narrowing the declaration:
+Zero-value fallback applies only after execution reaches the end of the whole merged body without supplying a result, not at the end of each contribution. If the declared result type does not permit `void`, the merged function supplies that type's ordinary zero value. Contribution-level `void` does not add `void` or implicit `null` to the caller-visible result type.
 
-```first
-ServiceManager (
-	getValue() returns string or int
-)
+Body merging does not rebind names: each contribution resolves references using its own partition visibility. Declaration order across files comes from the project's source-assembly order. The exact file-ordering mechanism remains to be specified; partition semantics do not introduce a separate file-ordering policy.
 
-ServiceManager (
-	declare partition implementation
-	getValue() returns string or int (
-		return "Ready"
-	)
-)
-```
+## Cross-Partition Contracts
 
-Void advice contributes behavior to the existing function without changing its public return type. Omitting a return type on advice does not turn the merged function into a void function.
+Function contributions preserve the architectural parameter list and parameter types. Deeper contributions may not add parameters, remove parameters, or narrow or widen their types. A change to the required inputs belongs in the architectural declaration.
+
+The architectural result type defines the successful result contract. A contribution may omit its return annotation or repeat the architectural result type; it may not redeclare a narrower or wider successful result type. Returning a compatible subtype or a member of a declared union does not change that contract.
+
+For an architectural result type `T`, each contribution may produce a value compatible with `T`, complete without a value (`void`), or let a `bomb` escape. These are the only permitted implementation-level extensions. In particular, a contribution may not add `null` or an unrelated successful result alternative unless the architectural type already permits it.
+
+Bombability is inferred across all executable contributions. An escaping bomb expands the caller-visible result from `T` to `T or bomb` without requiring that alternative to be written in the architectural declaration. Bombs handled internally do not by themselves make the merged function bombable. Unlike contribution-level `void`, an escaping bomb is a result of the complete call.
+
+Other typed declarations retain the ordinary refinement rule: a deeper contribution may preserve or narrow an ancestor type, but may not widen it.
 
 ## Views And Compilation
 
-The compiler and language service can inspect a selected partition with its ancestor declarations and required interface dependencies. Descendant implementations need not be loaded to understand the architectural view. Lookup never searches hidden descendants or siblings to repair an unresolved reference.
+The compiler and language service can inspect a selected partition with its ancestor declarations and required interface dependencies. Descendant implementations need not be loaded to understand the declared architectural contract. Determining inferred bombability requires the executable contributions; an architectural declaration alone does not establish that a function cannot bomb. Lookup never searches hidden descendants or siblings to repair an unresolved reference.
 
-An editor view that hides lower partitions does not change the complete program's behavior. Compiling an incomplete partition view is distinct from executing the fully assembled implementation; missing bodies retain ordinary incomplete-function behavior. Files and target backends remain independent of partition selection.
+Compiling an incomplete partition view is distinct from executing the fully assembled implementation; missing bodies retain ordinary incomplete-function behavior. Files and target backends remain independent of partition selection.
 
 ## Notices
 
-The compiler reports notices for same-partition duplicate declarations, references across a forbidden visibility boundary, widened ancestor contracts, implementation return types that differ from architectural declarations, and multiple value-producing implementations of one function.
+The compiler reports notices for same-partition duplicate declarations, references across a forbidden visibility boundary, forbidden changes to architectural parameters or successful result types, widened non-function ancestor contracts, incompatible returned values, and multiple bodyless architectural declarations of one function.
 
-Partition merging does not silently select the first or last implementation to resolve these conflicts. Construct-specific recovery and the remaining details of advice control flow follow their respective language rules as those rules are specified.
+Partition merging does not silently select the first or last implementation to resolve these conflicts. Construct-specific recovery follows the respective language rules.
