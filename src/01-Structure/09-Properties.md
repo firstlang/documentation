@@ -1,4 +1,4 @@
-Properties define computed member access on spaces and classes.
+Properties define stored or computed member access on spaces and classes.
 
 A property is written as a getter, a setter, or both.
 
@@ -40,12 +40,26 @@ A property may have only a getter, only a setter, or both. A space or class may 
 
 Setters do not return values.
 
-An omitted accessor body behaves like an empty accessor body. A getter with an explicit result type returns that type's zero value on fall-through. A setter with no body evaluates the receiver and assigned value, then performs no stored update unless an implementation partition supplies one.
+A bodyless getter with no declared setter exposes a stored value for reading. Code within the owning class or space can assign that value; code outside the owner cannot assign it without a declared setter. Until assigned, the stored value has its type's ordinary zero value.
 
 ```first
-get name() is string
-set name(value is string)
+User (
+	constructor(name is string) (
+		this.name = name
+	)
+	get name() is string
+)
+
+user = User("Ada")
+console.log(user.name)
+// > "Ada"
+user.name = "Grace"
+// > Notice: no externally accessible setter.
 ```
+
+Contributions in different partitions retain the same logical owner. An implementation contribution can assign the value when the property is visible under the ordinary partition rules: its declaration must be in the contribution's own partition or an ancestor. A different partition does not by itself make the contribution external to the class or space. See [[18-Partitions]].
+
+A getter with an executable body computes its result using ordinary return and fall-through rules.
 
 ## Getter And Setter Types
 
@@ -69,7 +83,7 @@ Setting (
 
 ## Access
 
-Properties follow ordinary structural access. A direct property on a class is public. A property inside a nested space under a class is protected through that nested path.
+Property reads and declared setters follow ordinary structural access. A direct property on a class is public. A property inside a nested space under a class is protected through that nested path. A bodyless getter alone does not expose assignment outside its owner.
 
 ```first
 User (
@@ -101,9 +115,3 @@ Registry (
 ```
 
 Space properties do not have an implicit instance.
-
-## Automatic Properties
-
-First does not currently have a condensed automatic property syntax.
-
-Fields, properties, and explicit constructor assignments cover the supported storage and API shapes. The text format should not add a second spelling only to make common read/write access shorter.
